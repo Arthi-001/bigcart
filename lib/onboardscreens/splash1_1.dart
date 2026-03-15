@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Splash11 extends StatefulWidget {
   const Splash11({super.key});
@@ -21,21 +22,27 @@ class _Splash11State extends State<Splash11> {
         SizedBox(height: size.height*0.1,),
         Center(
           child: Text("Welcome To",
-          style: TextStyle(color: Colors.white,
+          style: GoogleFonts.poppins(color: Colors.white,
             fontSize: 30,
             fontWeight: FontWeight.w500),),
         ),
         Center(
-          child: Text(" Big Cart",
-          style: TextStyle(color: Colors.green,
-            fontSize: 30,
-            fontWeight: FontWeight.w500),),
-        ),
+          child:
+          RichText(
+            text: TextSpan(
+              text: "BIG ",
+              style: GoogleFonts.poppins(
+                color: Colors.green,fontSize: 30,fontWeight: FontWeight.w300),
+                
+                children: [
+                  TextSpan(text: "CART",
+                  style: GoogleFonts.poppins(color: Colors.green,fontSize: 30,fontWeight: FontWeight.w500))
+                  ]),) ,),
         SizedBox(height: size.height*0.05,),
-        Center(child: Text("Your one-stop shop for fresh groceries and  ",style: TextStyle( color: Colors.white,fontSize: 15,),)),
+        Center(child: Text("Your one-stop shop for fresh groceries and  ",style: GoogleFonts.poppins( color: Colors.white,fontSize: 15,),)),
         Center(
           child: Text(" daily essentials. ",
-          style: TextStyle(color: Colors.white,
+          style: GoogleFonts.poppins(color: Colors.white,
             fontSize: 15,),),
         ),
        

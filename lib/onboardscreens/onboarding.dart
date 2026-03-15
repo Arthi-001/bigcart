@@ -1,9 +1,11 @@
 
+import 'package:bigcart/authentication/welcome.dart';
 import 'package:bigcart/onboardscreens/splash1_1.dart';
 import 'package:bigcart/onboardscreens/splash1_2.dart';
 import 'package:bigcart/onboardscreens/splash1_3.dart';
 import 'package:bigcart/onboardscreens/splash1_4.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Onboarding extends StatefulWidget {
@@ -14,6 +16,7 @@ class Onboarding extends StatefulWidget {
 }
 
 class _OnboardingState extends State<Onboarding> {
+  int currentPage = 0;
    final PageController _controller = PageController();
   @override
   Widget build(BuildContext context) {
@@ -24,12 +27,17 @@ class _OnboardingState extends State<Onboarding> {
 
           Expanded(
             child: PageView(
-              controller: _controller,
+             controller: _controller,
+  onPageChanged: (index) {
+    setState(() {
+      currentPage = index;
+    });
+  },
               children: [
-                Splash14(),
-                Splash13(),
-                Splash12(),
                 Splash11(),
+                Splash12(),
+                Splash13(),
+                Splash14(),
                        ],
             ),
             
@@ -71,7 +79,23 @@ class _OnboardingState extends State<Onboarding> {
     borderRadius: BorderRadius.circular(15),
   ),
   child: ElevatedButton(
-    onPressed: () {},
+   onPressed: () {
+  if (currentPage == 3) {
+    // Last splash screen → go to login
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Welcome(),
+      ),
+    );
+  } else {
+    // Move to next page
+    _controller.nextPage(
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+    );
+  }
+},
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -80,18 +104,14 @@ class _OnboardingState extends State<Onboarding> {
         borderRadius: BorderRadius.circular(30),
       ),
     ),
-    child: GestureDetector(onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>Onboarding()));
-    },
-      child: const Text(
-        "Get Started",
-        style: TextStyle(
-          fontSize: 15,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
+    child: Text(
+  currentPage == 3 ? "Get Started" : "Next",
+  style: GoogleFonts.poppins(
+    fontSize: 15,
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  ),
+),
   ),
 )
        )
