@@ -1,6 +1,6 @@
 import 'package:bigcart/authentication/forgotpassword.dart';
 import 'package:bigcart/authentication/signup.dart';
-import 'package:bigcart/screens/home.dart';
+import 'package:bigcart/screens/bottomnavigator.dart';
 import 'package:bigcart/widgets/onboardingheader.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +96,7 @@ class _LoginState extends State<Login> {
       child: Switch(
         value: isOn,
         activeTrackColor: Colors.green,
-        activeColor: Colors.white,
+        activeThumbColor: Colors.white,
         onChanged: (value) {
           setState(() {
             isOn = value;
@@ -144,7 +144,7 @@ class _LoginState extends State<Login> {
     ),
     child:
        GestureDetector(onTap: () {
-         Navigator.push(context, MaterialPageRoute(builder:(context)=>Home()));
+         Navigator.push(context, MaterialPageRoute(builder:(context)=>BottomNavigator()));
        },
          child: Text(
             "Login",

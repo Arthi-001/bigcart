@@ -1,5 +1,5 @@
 import 'package:bigcart/authentication/login.dart';
-import 'package:bigcart/screens/home.dart';
+import 'package:bigcart/screens/bottomnavigator.dart';
 import 'package:bigcart/widgets/onboardingheader.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +131,7 @@ class _SignupState extends State<Signup> {
     ),
     child: 
         GestureDetector(onTap: () {
-         Navigator.push(context, MaterialPageRoute(builder:(context)=>Home()));
+         Navigator.push(context, MaterialPageRoute(builder:(context)=>BottomNavigator()));
        },
           child: Text(
             "Signup",

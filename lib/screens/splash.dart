@@ -18,7 +18,7 @@ void initState() {
 
 void navigateToOnboarding() async {
   await Future.delayed(const Duration(seconds: 3));
-
+   if (!mounted) return;
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
