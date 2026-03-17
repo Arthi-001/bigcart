@@ -1,4 +1,5 @@
-import 'package:bigcart/screens/account.dart';
+
+import 'package:bigcart/screens/account/account.dart';
 import 'package:bigcart/screens/home.dart';
 import 'package:flutter/material.dart';
 
