@@ -42,6 +42,12 @@ class _MyordersState extends State<Myorders> {
            },
       ),
     ],
-  ),);
+  ),
+  body: Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: const Color(0xFFF4F5F9),
+                 ),
+  );
   }
 }

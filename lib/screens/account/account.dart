@@ -5,8 +5,10 @@ import 'package:bigcart/screens/account/notifications.dart';
 import 'package:bigcart/widgets/accountrow.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Account extends StatefulWidget {
+   
   const Account({super.key});
 
   @override
@@ -14,6 +16,23 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
+  @override
+void initState() {
+  super.initState();
+  loadUserData(); // ✅ IMPORTANT
+}
+  Future<void> loadUserData() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  setState(() {
+    name = prefs.getString("name") ?? "Username";
+    email = prefs.getString("email") ?? "usermail@gmail.com";
+    phone = prefs.getString("phone") ?? "";
+  });
+}
+   String name = "Username";
+  String email = "usermail@gmail.com";
+  String phone = "";
   @override
   Widget build(BuildContext context) {
      final Size size=MediaQuery.of(context).size;
@@ -69,12 +88,12 @@ class _AccountState extends State<Account> {
     ),),
     Positioned(
       top: size.height * 0.25,
-      left: size.width / 2.1- 30,
-      child: Text("Username",style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),)),
+      left: size.width / 2- 30,
+      child: Text(name,style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),)),
     Positioned(
       top: size.height * 0.28,
       left: size.width / 2.5- 30,
-      child: Text("usermail@gmail.com",style: GoogleFonts.poppins(fontSize: 15),)),
+      child: Text(email,style: GoogleFonts.poppins(fontSize: 15),)),
       Positioned(
          top: size.height * 0.32,
          left: 0,
@@ -84,7 +103,20 @@ class _AccountState extends State<Account> {
     AccountRow(
       icon: Icons.person_outline,
       title: "About me",
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Aboutme()));},
+     onTap: () async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Aboutme()),
+    );
+
+    if (result != null) {
+      setState(() {
+        name = result["name"];
+        email = result["email"];
+        phone = result["phone"];
+      });
+    }
+  },
     ),
     AccountRow(
       icon: Icons.inventory_outlined,
@@ -99,7 +131,13 @@ class _AccountState extends State<Account> {
     AccountRow(
       icon: Icons.location_on_outlined,
       title: "My Address",
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myaddress()));},
+      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myaddress(name: "Name",
+                                    email: "Email",
+                                    phone: "Phone",
+                                    address: "Address",
+                                    zip: "Zip",
+                                    city: "City",
+                                    country: "Selected")));},
     ),
      AccountRow(
       icon: Icons.credit_card_outlined,
@@ -109,7 +147,7 @@ class _AccountState extends State<Account> {
      AccountRow(
       icon: Icons.currency_exchange,
       title: "Transactions",
-      onTap: () {},
+      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myorders()));},
     ),
      AccountRow(
       icon: Icons.notifications_outlined,

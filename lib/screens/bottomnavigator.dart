@@ -16,7 +16,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
   // List of screens (replace with your actual screens)
   final List<Widget> _pages = [
     const  Home(),
-    const Account(),
+    Account(),
     Center(child: Text('Profile Page')),
   ];
 
