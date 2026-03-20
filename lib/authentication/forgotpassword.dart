@@ -10,6 +10,7 @@ class Forgotpassword extends StatefulWidget {
 }
 
 class _ForgotpasswordState extends State<Forgotpassword> {
+   TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final Size size=MediaQuery.of(context).size;
@@ -42,15 +43,17 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                         color: Colors.white,
                         border: Border.all(color:Colors.white ),
                         borderRadius: BorderRadius.circular(10),),
-                        child: Row(children: [
-                          Padding(
-                            padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                            child: Icon(Icons.email_outlined)
-                          ),
-                          SizedBox(width:size.width*0.02),
-                          Text("Email Address",style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.w500),)
+                        child:  TextField( controller: emailController,
+    decoration: InputDecoration(
+      hintText: "Email Address",
+      border: InputBorder.none, // removes default underline
+      prefixIcon: Icon(Icons.email_outlined),
+      contentPadding: EdgeInsets.symmetric(
+        vertical: size.height * 0.02,
+      ),
+    ),
+  ),
                     
-                          ],),
                         ),
                          SizedBox(height:size.height*0.02),
                          

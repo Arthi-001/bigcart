@@ -1,6 +1,7 @@
 
 import 'package:bigcart/screens/account/account.dart';
 import 'package:bigcart/screens/home.dart';
+import 'package:bigcart/screens/shopping_cart.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigator extends StatefulWidget {
@@ -86,11 +87,15 @@ class _BottomNavigatorState extends State<BottomNavigator> {
         gradient: LinearGradient(
           colors: [ const Color.fromARGB(255, 175, 245, 95),Colors.green]
           )),
-      child: const Center(
-        child: Icon(
-          Icons.shopping_bag_outlined,
-          color: Colors.white,
-          size: 28,
+      child:  Center(
+        child:GestureDetector(onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ShoppingCart()));
+        },
+          child: Icon(
+            Icons.shopping_bag_outlined,
+            color: Colors.white,
+            size: 28,
+          ),
         ),
       ),
     ),

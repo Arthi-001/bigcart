@@ -6,6 +6,7 @@ import 'package:bigcart/onboardscreens/splash1_3.dart';
 import 'package:bigcart/onboardscreens/splash1_4.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class Onboarding extends StatefulWidget {
@@ -18,6 +19,7 @@ class Onboarding extends StatefulWidget {
 class _OnboardingState extends State<Onboarding> {
   int currentPage = 0;
    final PageController _controller = PageController();
+   
   @override
   Widget build(BuildContext context) {
     final Size size=MediaQuery.of(context).size;
@@ -79,17 +81,22 @@ class _OnboardingState extends State<Onboarding> {
     borderRadius: BorderRadius.circular(15),
   ),
   child: ElevatedButton(
-   onPressed: () {
+   onPressed: () async {
   if (currentPage == 3) {
-    // Last splash screen → go to login
+
+    // ✅ SAVE FLAG
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("seenOnboarding", true);
+
+    // ✅ Navigate
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => const Welcome(),
       ),
     );
+
   } else {
-    // Move to next page
     _controller.nextPage(
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,

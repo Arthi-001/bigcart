@@ -1,3 +1,4 @@
+import 'package:bigcart/screens/search.dart';
 import 'package:bigcart/widgets/categorieswidget.dart';
 import 'package:bigcart/widgets/productcard.dart';
 import 'package:flutter/material.dart';
@@ -34,29 +35,33 @@ void initState() {
           children: [
             SizedBox(height:size.height*0.07,),
             Padding(padding: EdgeInsets.only(left: size.width * 0.05),
-              child: Container(
-                          height:size.height*0.07,
-                          width: size.width*0.9,
+              child: GestureDetector(onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Search()));
+              },
+                child: Container(
+                            height:size.height*0.07,
+                            width: size.width*0.9,
+                            
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEBEBEB),
+                              border: Border.all(color:const Color(0xFFEBEBEB) ),
+                              borderRadius: BorderRadius.circular(10),),
+                              child: Row(children: [
+                                Padding(
+                                  padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
+                                  child: Icon(Icons.search_outlined)
+                                ),
+                                SizedBox(width:size.width*0.02),
+                                Text("Search keywords..",style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.w500),),
+                                SizedBox(width:size.width*0.23),
+                                 Padding(
+                                  padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
+                                  child: Icon(Icons.tune_outlined)
+                                ),
                           
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEBEBEB),
-                            border: Border.all(color:const Color(0xFFEBEBEB) ),
-                            borderRadius: BorderRadius.circular(10),),
-                            child: Row(children: [
-                              Padding(
-                                padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                                child: Icon(Icons.search_outlined)
+                                ],),
                               ),
-                              SizedBox(width:size.width*0.02),
-                              Text("Search keywords..",style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.w500),),
-                              SizedBox(width:size.width*0.23),
-                               Padding(
-                                padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                                child: Icon(Icons.tune_outlined)
-                              ),
-                        
-                              ],),
-                            ),
+              ),
                           
             ),
             SizedBox(height: size.height * 0.02),
