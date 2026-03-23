@@ -1,3 +1,4 @@
+import 'package:bigcart/authentication/login.dart';
 import 'package:bigcart/screens/account/aboutme.dart';
 import 'package:bigcart/screens/account/myaddress.dart';
 import 'package:bigcart/screens/account/myorders.dart';
@@ -5,7 +6,7 @@ import 'package:bigcart/screens/account/notifications.dart';
 import 'package:bigcart/widgets/accountrow.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Account extends StatefulWidget {
    
@@ -17,18 +18,51 @@ class Account extends StatefulWidget {
 
 class _AccountState extends State<Account> {
   @override
-void initState() {
-  super.initState();
-  loadUserData(); // ✅ IMPORTANT
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  loadUserData();
 }
-  Future<void> loadUserData() async {
-  final prefs = await SharedPreferences.getInstance();
 
-  setState(() {
-    name = prefs.getString("name") ?? "Username";
-    email = prefs.getString("email") ?? "usermail@gmail.com";
-    phone = prefs.getString("phone") ?? "";
-  });
+Future<void> loadUserData() async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+
+  if (user == null) return;
+
+  try {
+    // Try to get the user row
+    final data = await supabase
+        .from('users_data')
+        .select()
+        .eq('id', user.id)
+        .maybeSingle(); // ✅ Use maybeSingle instead of single
+
+    if (data == null) {
+      // Row doesn't exist → create it for first-time login
+      await supabase.from('users_data').insert({
+        'id': user.id,
+        'name': '',
+        'email': user.email ?? '',
+        'phone': '',
+      });
+
+      // Use default values
+      setState(() {
+        name = "Username";
+        email = user.email ?? "usermail@gmail.com";
+        phone = "";
+      });
+    } else {
+      // Row exists → load values
+      setState(() {
+        name = data['name'] ?? "Username";
+        email = data['email'] ?? "usermail@gmail.com";
+        phone = data['phone'] ?? "";
+      });
+    }
+  } catch (e) {
+    print("Error loading user: $e");
+  }
 }
    String name = "Username";
   String email = "usermail@gmail.com";
@@ -103,11 +137,12 @@ void initState() {
     AccountRow(
       icon: Icons.person_outline,
       title: "About me",
-     onTap: () async {
+     onPressed: () async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => Aboutme()),
     );
+    await loadUserData(); 
 
     if (result != null) {
       setState(() {
@@ -121,17 +156,17 @@ void initState() {
     AccountRow(
       icon: Icons.inventory_outlined,
       title: "My Orders",
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myorders()));},
+      onPressed: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myorders()));},
     ),
     AccountRow(
       icon: Icons.favorite_border,
       title: "My Favourites",
-      onTap: () {},
+      onPressed: () {},
     ),
     AccountRow(
       icon: Icons.location_on_outlined,
       title: "My Address",
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myaddress(name: "Name",
+      onPressed: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myaddress(name: "Name",
                                     email: "Email",
                                     phone: "Phone",
                                     address: "Address",
@@ -142,21 +177,48 @@ void initState() {
      AccountRow(
       icon: Icons.credit_card_outlined,
       title: "Credit cards",
-      onTap: () {},
+      onPressed: () {},
     ),
      AccountRow(
       icon: Icons.currency_exchange,
       title: "Transactions",
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myorders()));},
+      onPressed: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myorders()));},
     ),
      AccountRow(
       icon: Icons.notifications_outlined,
       title: "Notifications",
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Notifications()));},
+      onPressed: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Notifications()));},
     ),
      AccountRow(
       icon: Icons.logout_outlined,
       title: "Sign out",
+      onPressed: () {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text("Logout",style: GoogleFonts.poppins(color: Colors.green),),
+      content: Text("Are you sure you want to logout?",style: GoogleFonts.poppins(color: Colors.grey.shade700),),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Cancel",style: GoogleFonts.poppins(color: Colors.green),),
+        ),
+        TextButton(
+          onPressed: () async {
+            await Supabase.instance.client.auth.signOut();
+
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const Login()),
+              (route) => false,
+            );
+          },
+          child: Text("Logout",style: GoogleFonts.poppins(color: Colors.green),),
+        ),
+      ],
+    ),
+  );
+}
      
     ),
   ],

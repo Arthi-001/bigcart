@@ -1,9 +1,9 @@
 import 'package:bigcart/authentication/login.dart';
-import 'package:bigcart/screens/bottomnavigator.dart';
 import 'package:bigcart/widgets/onboardingheader.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -13,6 +13,10 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
+  TextEditingController emailController = TextEditingController();
+TextEditingController phoneController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
+bool isObscure=true;
   @override
   Widget build(BuildContext context) {
      final Size size=MediaQuery.of(context).size;
@@ -57,15 +61,19 @@ class _SignupState extends State<Signup> {
                         color: Colors.white,
                         border: Border.all(color:Colors.white ),
                         borderRadius: BorderRadius.circular(10),),
-                        child: Row(children: [
-                          Padding(
-                            padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                            child: Icon(Icons.email_outlined)
-                          ),
-                          SizedBox(width:size.width*0.02),
-                          Text("Email Address",style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.w500),)
+                        child: 
+                          TextField( controller: emailController,
+    decoration: InputDecoration(
+      hintText: "Email Address",
+      border: InputBorder.none, // removes default underline
+      prefixIcon: Icon(Icons.email_outlined),
+      contentPadding: EdgeInsets.symmetric(
+        vertical: size.height * 0.02,
+      ),
+    ),
+  ),
                     
-                          ],),
+                          
                         ),
                         SizedBox(height:size.height*0.01),
                         Container(
@@ -74,37 +82,60 @@ class _SignupState extends State<Signup> {
                         color: Colors.white,
                         border: Border.all(color:Colors.white ),
                         borderRadius: BorderRadius.circular(10),),
-                        child: Row(children: [
-                          Padding(
-                            padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                            child: Icon(Icons.phone_outlined)
-                          ),
-                          SizedBox(width:size.width*0.02),
-                          Text("Phone Number",style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.w500),)
+                        child: 
+                          
+                          TextField( controller: phoneController,
+    decoration: InputDecoration(
+      hintText: "Phone Number",
+      border: InputBorder.none, // removes default underline
+      prefixIcon: Icon(Icons.phone_outlined),
+      contentPadding: EdgeInsets.symmetric(
+        vertical: size.height * 0.02,
+      ),
+    ),
+  ),
                     
-                          ],),
+                          
                         ),
                         SizedBox(height:size.height*0.01),
                          Container(
-                      height:size.height*0.07,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color:Colors.white ),
-                        borderRadius: BorderRadius.circular(10),),
-                        child: Row(children: [
-                          Padding(
-                            padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                            child: Icon(Icons.lock_outline)
-                          ),
-                          SizedBox(width:size.width*0.6),
-                           Padding(
-                            padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                            child: Icon(Icons.remove_red_eye_outlined)
-                          ),
+                  height:size.height*0.08,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color:Colors.white ),
+                          borderRadius: BorderRadius.circular(10),),
+                          child: 
+                            Padding(
+                              padding:  EdgeInsets.only(left: size.width*0.00001),
+                              child: TextField( controller: passwordController,
+        obscureText: isObscure,
+        decoration: InputDecoration(
+          hintText: "Current Password",
+          border: InputBorder.none,
+          
+          
+          prefixIcon: const Icon(Icons.lock_outline),
 
-                    
-                          ],),
-                        ),
+          
+          suffixIcon: IconButton(
+            icon: Icon(
+              isObscure ? Icons.visibility_off : Icons.visibility,
+              color: Colors.grey, 
+            ),
+            onPressed: () {
+              setState(() {
+                isObscure = !isObscure;
+              });
+            },
+          ),
+
+          contentPadding: EdgeInsets.symmetric(
+            vertical: size.height * 0.02,
+          ),
+        ),
+  ),
+      ),
+    ),
                          SizedBox(height:size.height*0.023),
                          Container(
   width: size.width*0.9,
@@ -120,7 +151,54 @@ class _SignupState extends State<Signup> {
     borderRadius: BorderRadius.circular(10),
   ),
   child: ElevatedButton(
-    onPressed: () {},
+  onPressed: () async {
+  if (emailController.text.isEmpty ||
+      phoneController.text.isEmpty ||
+      passwordController.text.isEmpty) {
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Please fill all fields")),
+    );
+    return;
+  }
+
+  final supabase = Supabase.instance.client;
+
+  try {
+    // 🔐 Create user in Supabase
+    final response = await supabase.auth.signUp(
+      email: emailController.text.trim(),
+      
+      password: passwordController.text.trim(),
+    );
+
+    if (response.user != null) {
+      // ✅ Save extra data (phone) in profiles table
+      await supabase.from('users_data').insert({
+        'id': response.user!.id,
+        'phone': phoneController.text.trim(),
+      });
+
+      // ✅ Navigate to login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Login(),
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Signup successful! Please login")),
+      );
+    }
+
+  } catch (e) {
+    print("SIGNUP ERROR: $e");
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Signup failed: ${e.toString()}")),
+    );
+  }
+},
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -130,16 +208,12 @@ class _SignupState extends State<Signup> {
       ),
     ),
     child: 
-        GestureDetector(onTap: () {
-         Navigator.push(context, MaterialPageRoute(builder:(context)=>BottomNavigator()));
-       },
-          child: Text(
-            "Signup",
-            style: GoogleFonts.poppins(
-              fontSize: 15,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+        Text(
+          "Signup",
+          style: GoogleFonts.poppins(
+            fontSize: 15,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       

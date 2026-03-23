@@ -1,29 +1,69 @@
 import 'package:bigcart/screens/search.dart';
+import 'package:bigcart/screens/shopping_cart.dart';
 import 'package:bigcart/widgets/categorieswidget.dart';
 import 'package:bigcart/widgets/productcard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
-
+   List<Map<String, dynamic>> cartItems = [];
+   Home({super.key, required this.cartItems});
   @override
   State<Home> createState() => _HomeState();
 }
 
+
 class _HomeState extends State<Home> {
-  final PageController _controller = PageController();
-  @override
+  late List<Map<String, dynamic>> cartItems;
+  
+
+@override
 void initState() {
   super.initState();
-
-  Future.microtask(() {if (!mounted) return;
-    precacheImage(const AssetImage("assets/annie-spratt-R3LcfTvcGWY-unsplash.jpg"), context);
-    precacheImage(const AssetImage("assets/mario-raj-0sz-sfC_ekc-unsplash.jpg"), context);
-    precacheImage(const AssetImage("assets/anton-darius-FCrgmqqvl-w-unsplash.jpg"), context);
-  });
+  cartItems = widget.cartItems; // ✅ SAME list
 }
+void addToCart(Map item) {
+  int index = cartItems.indexWhere((e) => e['name'] == item['name']);
+
+  setState(() {
+    if (index != -1) {
+      cartItems[index]['qty'] =
+          (cartItems[index]['qty'] ?? 1) + 1;
+    } else {
+      cartItems.add({
+        "name": item['name'],
+        "price": item['price'],
+        "image": item['image_url'],
+        "quantity": item['quantity'],
+        "qty": 1,
+      });
+    }
+  });
+   print(cartItems);
+}
+  Future<List<dynamic>> fetchProducts() async {
+  final supabase = Supabase.instance.client;
+
+
+  final data = await supabase
+      .from('items') // 👈 your table name
+      .select();
+ 
+  return data;
+  
+}
+final List<Color> colors = [
+  Colors.redAccent.shade100,
+  Colors.greenAccent.shade100,
+  Colors.green.shade100,
+  Colors.red.shade100,
+  Colors.blueGrey.shade100,
+  Colors.yellowAccent.shade100,
+];
+  final PageController _controller = PageController();
+ 
   
   @override
   Widget build(BuildContext context) {
@@ -203,26 +243,56 @@ void initState() {
             ],
           ) ,
           SizedBox(height:size.height*0.02),
-         GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.7,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-          ),
-          itemCount: 6,
-          itemBuilder: (context, index) {
-            return const ProductCard();
-          },
-        )
-        
-            ]),
-      ),       
+          FutureBuilder(
+  future: fetchProducts(),
+  builder: (context, snapshot) {
 
+    if (!snapshot.hasData) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
+    final products = snapshot.data as List; // ✅ defined here
 
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.7,
+      ),
+      itemCount: products.length, // ✅ used here
+      itemBuilder: (context, index) {
+        final item = products[index];
+
+        return ProductCard(
+          bgColor:colors[index % colors.length],
+          name: item['name'],
+          price: item['price'],
+          image: item['image_url'],
+          quantity: item['quantity'],
+
+           onAddToCart: () {
+    addToCart(item);
+     Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ShoppingCart(cartItems: cartItems),
+      ),
     );
+  },
+        );
+      },
+    );
+  },
+)
+        ])));
   }
-}
+        
+        
+            
+             
+
+
+
+    
+  }

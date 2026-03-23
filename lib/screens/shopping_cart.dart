@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ShoppingCart extends StatefulWidget {
-  const  ShoppingCart ({super.key});
+  final List<Map<String, dynamic>> cartItems;
+  const  ShoppingCart ({super.key,required this.cartItems});
 
   @override
   State< ShoppingCart> createState() => _ShoppingCartState();
@@ -11,7 +12,13 @@ class ShoppingCart extends StatefulWidget {
 class _ShoppingCartState extends State< ShoppingCart> {
 
   // This list will come from API later
-  List<Map<String, dynamic>> cartItems = [];
+   late List<Map<String, dynamic>> cartItems ;
+
+   @override
+void initState() {
+  super.initState();
+  cartItems = widget.cartItems;
+}
 
   void increaseQty(int index) {
     setState(() {
@@ -93,6 +100,7 @@ class _ShoppingCartState extends State< ShoppingCart> {
 
   // ---------------- CART LIST ----------------
   Widget _cartList() {
+    final Size size=MediaQuery.of(context).size;
     return Column(
       children: [
 
@@ -101,91 +109,165 @@ class _ShoppingCartState extends State< ShoppingCart> {
             itemCount: cartItems.length,
             itemBuilder: (context, index) {
               final item = cartItems[index];
+int qty = item['qty'] ?? 1;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
 
-                  child: Row(
-                    children: [
+  
+              return Dismissible(
+             key: Key(item['name'] + index.toString()),
 
-                      // Product Image
-                      Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.image),
-                      ),
+  direction: DismissDirection.endToStart, // 👉 swipe LEFT only
 
-                      const SizedBox(width: 12),
+  // 🔴 Background (appears while swiping)
+  background: Container(
+    alignment: Alignment.centerRight,
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    decoration: BoxDecoration(
+      color: Colors.red,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: const Icon(Icons.delete, color: Colors.white, size: 30),
+  ),
 
-                      // Name + Price
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item['name'] ?? '',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "₹${item['price']}",
-                              style: TextStyle(
-                                  color: Colors.grey.shade600),
-                            ),
-                          ],
-                        ),
-                      ),
+  // 🎬 Smooth animation duration
+  movementDuration: const Duration(milliseconds: 300),
 
-                      // Quantity controls
-                      Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () => increaseQty(index),
-                            child: const Icon(Icons.add, color: Colors.green),
-                          ),
+  // 🔥 DELETE ACTION
+  onDismissed: (direction) {
+    final removedItem = cartItems[index];
 
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: Text("${item['qty']}"),
-                          ),
+    removeItem(index);
 
-                          GestureDetector(
-                            onTap: () => decreaseQty(index),
-                            child: const Icon(Icons.remove),
-                          ),
-                        ],
-                      ),
+    // ✅ OPTIONAL: UNDO SNACKBAR
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${removedItem['name']} removed"),
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: "UNDO",
+          onPressed: () {
+            setState(() {
+              cartItems.insert(index, removedItem);
+            });
+          },
+        ),
+      ),
+    );
+  },
 
-                      const SizedBox(width: 10),
+              child:Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+  child: Container(
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+    ),
 
-                      // Delete Button
-                      GestureDetector(
-                        onTap: () => removeItem(index),
-                        child: Container(
-                          height: 50,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Icon(Icons.delete, color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
+    child: Row(
+      children: [
+
+        // 🖼 PRODUCT IMAGE
+        SizedBox(
+  height: 80,
+  width: 80,
+  child: Stack(
+    alignment: Alignment.topCenter,
+    clipBehavior: Clip.none,
+    children: [
+
+      // 🔵 Background Circle
+      Positioned(
+        top: 15,
+        child: ClipOval(
+          child: Container(
+            height: 60,
+            width: 60,
+            color: Colors.grey.shade200, // or dynamic color
+          ),
+        ),
+      ),
+
+      // 🖼️ Image popping out
+      Positioned(
+        top: -10,
+        child: item['image'] != null &&
+                item['image'].toString().startsWith('http')
+            ? Image.network(
+                item['image'],
+                height: 70,
+                fit: BoxFit.contain,
+              )
+            : const Icon(Icons.image, size: 40),
+      ),
+    ],
+  ),
+),
+
+        const SizedBox(width: 12),
+
+        // 📦 NAME + PRICE
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+               Text(
+                "\$${item['price']} x $qty",
+                 style:GoogleFonts.poppins (color: Colors.green),
+             ),
+            const SizedBox(height: 4),
+              Text(
+                item['name'] ?? '',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
                 ),
-              );
+              ),
+              const SizedBox(height: 4),
+
+              Text(item['quantity'] ?? '',
+                style:  GoogleFonts.poppins(
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              // 🔢 QUANTITY CONTROLS (HORIZONTAL)
+              
+            ],
+          ),
+          
+        ),
+        Column(
+  children: [
+    GestureDetector(
+      onTap: () => increaseQty(index),
+      child: const Icon(Icons.add, color: Colors.green),
+    ),
+
+    Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Text("${item['qty']}",style:  GoogleFonts.poppins(
+                  color: Colors.grey.shade700,
+                  fontWeight: FontWeight.w400,
+                ),),
+    ),
+
+    GestureDetector(
+      onTap: () => decreaseQty(index),
+      child: const Icon(Icons.remove, color: Colors.green),
+    ),
+  ],
+),
+
+        // 🗑 DELETE BUTTON
+       
+      ],
+    ),
+  ),
+));
             },
           ),
         ),
@@ -213,17 +295,47 @@ class _ShoppingCartState extends State< ShoppingCart> {
 
               const SizedBox(height: 15),
 
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text("Checkout"),
-              )
+               Positioned(
+                           bottom: size.height * 0.1,
+                           left: 20,
+                           right: 20,
+                           child: Container(
+                             width: size.width*0.9,
+                             height: size.height*0.07,
+                             decoration: BoxDecoration(
+                               gradient:  LinearGradient(
+                                 colors: [
+                                   const Color.fromARGB(255, 175, 245, 95),Colors.green
+                                 ],
+                                 begin: Alignment.topLeft,
+                                 end: Alignment.bottomRight,
+                               ),
+                               borderRadius: BorderRadius.circular(10),
+                             ),
+                             child: ElevatedButton(
+                               onPressed: () {},
+                               style: ElevatedButton.styleFrom(
+                                 backgroundColor: Colors.transparent,
+                                 shadowColor: Colors.transparent,
+                                 padding: const EdgeInsets.symmetric(vertical: 15),
+                                 shape: RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.circular(30),
+                                 ),
+                               ),
+                               child:
+                                  Text(
+                                     "Checkout",
+                                     style: GoogleFonts.poppins(
+                                       fontSize: 15,
+                                       color: Colors.white,
+                                       fontWeight: FontWeight.bold,
+                                     ),
+                                   ),
+                                 
+                               
+                             ),
+                           ),
+                         ),
             ],
           ),
         )
@@ -231,11 +343,16 @@ class _ShoppingCartState extends State< ShoppingCart> {
     );
   }
 
-  double _calculateTotal() {
-    double total = 0;
-    for (var item in cartItems) {
-      total += item['price'] * item['qty'];
-    }
-    return total;
+ double _calculateTotal() {
+  double total = 0;
+
+  for (var item in cartItems) {
+    double price = double.tryParse(item['price'].toString()) ?? 0;
+    int qty = item['qty'] ?? 1;
+
+    total += price * qty;
   }
+
+  return total;
+}
 }

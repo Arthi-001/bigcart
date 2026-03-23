@@ -12,21 +12,21 @@ class BottomNavigator extends StatefulWidget {
 }
 
 class _BottomNavigatorState extends State<BottomNavigator> {
+  List<Map<String, dynamic>> cartItems = []; 
   int _selectedIndex = 0;
 
-  // List of screens (replace with your actual screens)
-  final List<Widget> _pages = [
-    const  Home(),
+  
+@override
+  Widget build(BuildContext context) {
+    final Size size=MediaQuery.of(context).size;
+    final List<Widget> pages = [
+      Home(cartItems:cartItems),
     Account(),
     Center(child: Text('Profile Page')),
   ];
-
-
-  @override
-  Widget build(BuildContext context) {
-     final Size size=MediaQuery.of(context).size;
+     
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: pages[_selectedIndex],
       bottomNavigationBar:  BottomAppBar(
         color: Colors.white,
       child: SizedBox(
@@ -89,7 +89,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
           )),
       child:  Center(
         child:GestureDetector(onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>ShoppingCart()));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ShoppingCart(cartItems: cartItems,)));
         },
           child: Icon(
             Icons.shopping_bag_outlined,

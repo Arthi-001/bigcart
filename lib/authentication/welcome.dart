@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:bigcart/authentication/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -85,14 +86,17 @@ class _WelcomeState extends State<Welcome> {
     borderRadius: BorderRadius.circular(10),
   ),
   child: ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Signup(),
-        ),
-      );
-    },
+   onPressed: () async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool("seenWelcome", true); // ✅ save
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const Signup(),
+    ),
+  );
+},
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -131,14 +135,17 @@ Center(
                   TextSpan(text: "Login",
                   style: GoogleFonts.poppins(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold),
                   recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Login(),
-                ),
-              );
-            },
+  ..onTap = () async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("seenWelcome", true); // ✅ save
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Login(),
+      ),
+    );
+  },
                 
                   ),
                     ]),) ,),

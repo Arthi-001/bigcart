@@ -5,18 +5,21 @@ class AccountRow extends StatelessWidget {
   final IconData icon;
   final String title;
   final VoidCallback? onTap;
+  final VoidCallback onPressed;
 
   const AccountRow({
     super.key,
     required this.icon,
     required this.title,
     this.onTap,
+    required this.onPressed
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: onPressed,
+      
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Row(

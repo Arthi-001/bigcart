@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Aboutme extends StatefulWidget {
   const Aboutme({super.key});
@@ -10,6 +11,7 @@ class Aboutme extends StatefulWidget {
 }
 
 class _AboutmeState extends State<Aboutme> {
+  final supabase = Supabase.instance.client;
   TextEditingController nameController = TextEditingController();
 TextEditingController emailController = TextEditingController();
 TextEditingController phoneController = TextEditingController();
@@ -24,6 +26,16 @@ TextEditingController confirmController = TextEditingController();
 
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
+     final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+
+  if (user == null) return;
+
+  final data = await supabase
+      .from('users_data')
+      .select()
+      .eq('id', user.id)
+      .single();
     setState(() {
       nameController.text = prefs.getString("name") ?? "";
       emailController.text = prefs.getString("email") ?? "";
@@ -257,22 +269,42 @@ TextEditingController confirmController = TextEditingController();
                                borderRadius: BorderRadius.circular(10),
                              ),
                              child: ElevatedButton(
-                               onPressed: ()async {
-                                final prefs = await SharedPreferences.getInstance();
+                             
 
-  // ✅ SAVE DATA
-  await prefs.setString("name", nameController.text);
-  await prefs.setString("email", emailController.text);
-  await prefs.setString("phone", phoneController.text);
-                                Navigator.pop(
-    context,
-    {
-      "name": nameController.text,
-      "email": emailController.text,
-      "phone": phoneController.text,
-    },
-  );
-                               },
+
+
+onPressed: () async {
+  final user = supabase.auth.currentUser;
+
+  if (user == null) {
+    print("User not logged in");
+    return;
+  }
+
+  try {
+    await supabase.from('users_data').upsert({
+      'id': user.id, // important
+      'name': nameController.text,
+      'email': emailController.text,
+      'phone': phoneController.text,
+    });
+
+    // Optional: also save locally
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("name", nameController.text);
+    await prefs.setString("email", emailController.text);
+    await prefs.setString("phone", phoneController.text);
+
+    Navigator.pop(context);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Profile updated successfully")),
+    );
+
+  } catch (e) {
+    print("Error: $e");
+  }
+},
                                style: ElevatedButton.styleFrom(
                                  backgroundColor: Colors.transparent,
                                  shadowColor: Colors.transparent,
