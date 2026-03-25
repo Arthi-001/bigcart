@@ -1,5 +1,6 @@
 
 import 'package:bigcart/screens/account/account.dart';
+import 'package:bigcart/screens/favourites.dart';
 import 'package:bigcart/screens/home.dart';
 import 'package:bigcart/screens/shopping_cart.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     final List<Widget> pages = [
       Home(cartItems:cartItems),
     Account(),
-    Center(child: Text('Profile Page')),
+    Favourites(),
   ];
      
     return Scaffold(
@@ -89,7 +90,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
           )),
       child:  Center(
         child:GestureDetector(onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>ShoppingCart(cartItems: cartItems,)));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>ShoppingCart(cartItems:cartItems,)));
         },
           child: Icon(
             Icons.shopping_bag_outlined,

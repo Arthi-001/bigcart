@@ -3,6 +3,7 @@ import 'package:bigcart/screens/account/aboutme.dart';
 import 'package:bigcart/screens/account/myaddress.dart';
 import 'package:bigcart/screens/account/myorders.dart';
 import 'package:bigcart/screens/account/notifications.dart';
+import 'package:bigcart/screens/favourites.dart';
 import 'package:bigcart/widgets/accountrow.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -161,7 +162,10 @@ Future<void> loadUserData() async {
     AccountRow(
       icon: Icons.favorite_border,
       title: "My Favourites",
-      onPressed: () {},
+      onPressed: () { Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Favourites()),
+    );},
     ),
     AccountRow(
       icon: Icons.location_on_outlined,
