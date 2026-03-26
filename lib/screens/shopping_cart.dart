@@ -1,3 +1,4 @@
+import 'package:bigcart/screens/orderscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -308,7 +309,14 @@ total += price * (item['qty'] ?? 1);
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const OrderScreen(),
+      ),
+    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
