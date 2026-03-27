@@ -1,8 +1,10 @@
 import 'package:bigcart/authentication/login.dart';
 import 'package:bigcart/screens/account/aboutme.dart';
 import 'package:bigcart/screens/account/myaddress.dart';
+import 'package:bigcart/screens/account/mycards.dart';
 import 'package:bigcart/screens/account/myorders.dart';
 import 'package:bigcart/screens/account/notifications.dart';
+import 'package:bigcart/screens/account/transactions.dart';
 import 'package:bigcart/screens/favourites.dart';
 import 'package:bigcart/widgets/accountrow.dart';
 import 'package:flutter/material.dart';
@@ -181,12 +183,15 @@ Future<void> loadUserData() async {
      AccountRow(
       icon: Icons.credit_card_outlined,
       title: "Credit cards",
-      onPressed: () {},
+      onPressed: () {Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MyCards()),
+    );},
     ),
      AccountRow(
       icon: Icons.currency_exchange,
       title: "Transactions",
-      onPressed: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Myorders()));},
+      onPressed: () {Navigator.push(context, MaterialPageRoute(builder:  (context)=>Transactions()));},
     ),
      AccountRow(
       icon: Icons.notifications_outlined,

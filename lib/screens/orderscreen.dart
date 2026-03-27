@@ -1,7 +1,13 @@
+import 'package:bigcart/model/transactionmodel.dart';
 import 'package:bigcart/screens/ordersuccessscreen.dart';
+import 'package:bigcart/screens/transaction_provider.dart';
 import 'package:bigcart/widgets/ordersteps.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
@@ -27,6 +33,18 @@ final TextEditingController cvvController = TextEditingController();
 final _formKey = GlobalKey<FormState>();
 String? selectedCountry;
 String selectedDelivery = "standard";
+String getPaymentMethod() {
+  switch (selectedMethod) {
+    case 1:
+      return "PayPal";
+    case 2:
+      return "Card • ${_formatCardNumber(cardController.text)}";
+    case 3:
+      return "Apple Pay";
+    default:
+      return "Unknown";
+  }
+}
 @override
 void initState() {
   super.initState();
@@ -122,13 +140,34 @@ void initState() {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (currentStep < 3) {
                             // 👉 Step 1 & 2 → Next
                             setState(() {
                               currentStep++;
                             });
                           } else {
+                            final provider =
+    Provider.of<TransactionProvider>(context, listen: false);
+
+provider.addTransaction(
+  TransactionModel(
+    name: nameController.text.isEmpty
+        ? "Customer"
+        : nameController.text,
+
+    amount: "\$20", // 👉 later connect with cart total
+
+    method: getPaymentMethod(), // ✅ FIXED
+
+   date: DateFormat('MMMM d yyyy ' 'at' ' h:mm a').format(DateTime.now()),
+  ),
+);
+final supabase = Supabase.instance.client;
+    final user = supabase.auth.currentUser;
+    if (user != null) {
+      await supabase.from('cart').delete().eq('user_id', user.id);
+    }
                             ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(
       content: Text("Payment Successful"),
@@ -173,6 +212,28 @@ void initState() {
       ),
     );
   }
+  String _formatCardNumber(String input) {
+  if (input.isEmpty) return "XXXX XXXX XXXX 8790";
+
+  input = input.replaceAll(" ", "");
+
+  String masked = "";
+  for (int i = 0; i < input.length; i++) {
+    if (i < input.length - 4) {
+      masked += "X";
+    } else {
+      masked += input[i];
+    }
+  }
+
+  String formatted = "";
+  for (int i = 0; i < masked.length; i++) {
+    if (i % 4 == 0 && i != 0) formatted += " ";
+    formatted += masked[i];
+  }
+
+  return formatted;
+}
 
   Widget _buildStepContent() {
     final Size size=MediaQuery.of(context).size;
@@ -317,31 +378,10 @@ String formatExpiry(String input) {
 
       /// 🔴🟡 TOP LEFT CIRCLES (Mastercard style)
       Positioned(
-        top: 0,
-        left: 0,
-        child: Row(
-          children: [
-            Container(
-              width: 25,
-              height: 25,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
-            const SizedBox(width: 5),
-            Container(
-              width: 25,
-              height: 25,
-              decoration: const BoxDecoration(
-                color: Colors.orange,
-                shape: BoxShape.circle,
-              ),
-            ),
-          ],
-        ),
-      ),
-
+  top: 0,
+  left: 0,
+  child: _buildPaymentLogo(),
+),
       /// 🟢 DECORATIVE RIGHT CIRCLES
       Positioned(
         right: -20,
@@ -403,7 +443,7 @@ String formatExpiry(String input) {
                     ),
                   ),
                  Text(
-                  nameController.text.isEmpty ? "RUSSELL AUSTIN" : nameController.text.toUpperCase(),
+                  nameController.text.isEmpty ? "CARD HOLDER NAME" : nameController.text.toUpperCase(),
                    style: GoogleFonts.poppins(
     color: Colors.white,           
     fontSize: 15,                  
@@ -619,13 +659,66 @@ Widget _paymentOption(int id, IconData icon, String text) {
       ),
       child: Column(
         children: [
-          Icon(icon, color: Colors.green),
+          Icon(icon,
+  color: isSelected ? Colors.green : Colors.grey,),
           const SizedBox(height: 5),
           Text(text, style: GoogleFonts.poppins(fontSize: 12)),
         ],
       ),
     ),
   );
+}
+Widget _buildPaymentLogo() {
+  switch (selectedMethod) {
+
+    // ✅ PayPal
+    case 1:
+      return Text(
+        "PayPal",
+        style: TextStyle(
+          color: Colors.blue.shade900,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+      );
+
+    // ✅ Card (MasterCard style)
+    case 2:
+      return Stack(
+        children: [
+          Container(
+            width: 22,
+            height: 22,
+            decoration: const BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+          ),
+          Positioned(
+            left: 12,
+            child: Container(
+              width: 22,
+              height: 22,
+              decoration: const BoxDecoration(
+                color: Colors.orange,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ],
+      );
+
+    // ✅ Apple Pay
+    case 3:
+      return const Icon(
+        Icons.apple,
+        color: Colors.white,
+        size: 26,
+      );
+
+    default:
+      return const SizedBox();
+  }
 }
 Widget buildCountryDropdown(double width) {
   return Container(

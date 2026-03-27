@@ -1,5 +1,7 @@
 import 'package:bigcart/screens/splash.dart';
+import 'package:bigcart/screens/transaction_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -10,7 +12,16 @@ Future<void> main() async {
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhZW54Y3l2ZHBzaHVvdGtzcnNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNzU5MDYsImV4cCI6MjA4OTY1MTkwNn0.vhVJRVJQWBapCpqEN2QjCq3wqO4z_zp-naGfOnYqx_M', // 🔑 paste your anon key here
   );
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => TransactionProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
