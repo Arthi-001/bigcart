@@ -1,11 +1,33 @@
+import 'package:bigcart/screens/account/myorders.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class OrderSuccessScreen extends StatelessWidget {
+class OrderSuccessScreen extends StatefulWidget {
   const OrderSuccessScreen({super.key});
 
   @override
+  State<OrderSuccessScreen> createState() => _OrderSuccessScreenState();
+}
+
+class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
+  @override
+void initState() {
+  super.initState();
+
+  Future.delayed(const Duration(seconds: 2), () {
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const Myorders(),
+      ),
+      (route) => false,
+    );
+  });
+}
+  @override
   Widget build(BuildContext context) {
+    
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -68,39 +90,7 @@ class OrderSuccessScreen extends StatelessWidget {
         
             const Spacer(),
         
-            // 🔘 BUTTON
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Container(
-                width: size.width * 0.9,
-                height: size.height * 0.07,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 175, 245, 95),
-                      Colors.green,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // 👉 Navigate to tracking screen
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: Text(
-                    "Track order",
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            
           ],
         ),
       ),

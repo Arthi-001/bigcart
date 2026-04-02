@@ -1,15 +1,30 @@
-import 'package:bigcart/model/transactionmodel.dart';
-import 'package:bigcart/screens/transaction_provider.dart';
+
+import 'package:bigcart/providers/transaction_provider.dart';
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Transactions extends StatelessWidget {
+class Transactions extends StatefulWidget {
   const Transactions({super.key});
 
   @override
+  State<Transactions> createState() => _TransactionsState();
+}
+
+class _TransactionsState extends State<Transactions> {
+  @override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
+    Provider.of<TransactionProvider>(context, listen: false)
+        .loadTransactions();
+  });
+}
+  @override
   Widget build(BuildContext context) {
+    
     final transactions =
         Provider.of<TransactionProvider>(context).transactions;
 
@@ -17,9 +32,7 @@ class Transactions extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title:  Text("Transactions",style: GoogleFonts.poppins(color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.w600,),),),
+        title:  Text("Transactions",style: AppTextStyles.title),),
       body: Container(
         height: double.infinity,
         width: double.infinity,
@@ -28,13 +41,21 @@ class Transactions extends StatelessWidget {
             ? Center(
                 child: Text(
                   "No transactions yet",
-                  style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
+                  style: AppTextStyles.body,
                 ),
               )
             : ListView.builder(
                 itemCount: transactions.length,
                 itemBuilder: (context, index) {
                   final tx = transactions[index];
+                  final amount = tx.amount is num
+    ? tx.amount.toDouble()
+    : double.tryParse(
+          tx.amount.toString().replaceAll('\$', ''),
+        ) ??
+        0.0;
+
+             
                   return Container(
                     margin: const EdgeInsets.symmetric(
                         vertical: 8, horizontal: 16),
@@ -63,27 +84,23 @@ class Transactions extends StatelessWidget {
                             children: [
                               Text(
                                 tx.method,
-                                style: GoogleFonts.poppins(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                style: AppTextStyles.bold
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                tx.date,
-                                style:  GoogleFonts.poppins(
-                                    fontSize: 14, color: Colors.grey.shade600),
-                              ),
+                             Text(
+  tx.formattedDate,
+  style: AppTextStyles.body,
+),
                             ],
                           ),
                         ),
-        
+         Text(
+  "\$${amount.toStringAsFixed(2)}",
+  style: AppTextStyles.greenText,
+),
+  
                         // Amount
-                        Text(
-                          tx.amount,
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.green),
-                        ),
+                        
                       ],
                     ),
                   );

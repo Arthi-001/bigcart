@@ -1,6 +1,8 @@
+import 'package:bigcart/providers/forgot_password_provider.dart';
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:bigcart/widgets/headers.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class Forgotpassword extends StatefulWidget {
   const Forgotpassword({super.key});
@@ -22,17 +24,14 @@ class _ForgotpasswordState extends State<Forgotpassword> {
               title: "Password Recovery",
             ),
             SizedBox(height: size.height*0.08,),
-            Text("Forgot Password",style: GoogleFonts.poppins(fontSize: 22,fontWeight: FontWeight.w600,)),
+            Text("Forgot Password",style: AppTextStyles.title),
             SizedBox(height: size.height*0.02,),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
             "Enter your email address and we will send you instructions to reset your password.",
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.grey[700],
-            ),
+            style: AppTextStyles.body
           ),
         ),
          SizedBox(height:size.height*0.045),
@@ -71,7 +70,11 @@ class _ForgotpasswordState extends State<Forgotpassword> {
     borderRadius: BorderRadius.circular(10),
   ),
   child: ElevatedButton(
-    onPressed: () {},
+    onPressed: () {
+      final provider = Provider.of<ForgotPasswordProvider>(context, listen: false);
+
+  provider.sendResetLink(emailController.text.trim(), context);
+    },
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -80,21 +83,21 @@ class _ForgotpasswordState extends State<Forgotpassword> {
         borderRadius: BorderRadius.circular(30),
       ),
     ),
-    child:
+    child:Consumer<ForgotPasswordProvider>(
+  builder: (context, provider, child) {
+    return provider.isLoading
+        ? CircularProgressIndicator(color: Colors.white)
+        :
        Text(
           "Send Link",
-          style: GoogleFonts.poppins(
-            fontSize: 15,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+          style: AppTextStyles.whiteText
+        );},
       
     
   ),
 ),
 
-            ]),
+    )]),
     ));
   }
 }

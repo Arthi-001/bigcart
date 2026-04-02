@@ -1,8 +1,10 @@
 
+import 'package:bigcart/providers/cart_provider.dart';
 import 'package:bigcart/screens/account/account.dart';
-import 'package:bigcart/screens/favourites.dart';
-import 'package:bigcart/screens/home.dart';
-import 'package:bigcart/screens/shopping_cart.dart';
+import 'package:bigcart/screens/cart/shopping_cart.dart';
+import 'package:bigcart/screens/favourites/favourites.dart';
+import 'package:bigcart/screens/home/home.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavigator extends StatefulWidget {
@@ -13,15 +15,21 @@ class BottomNavigator extends StatefulWidget {
 }
 
 class _BottomNavigatorState extends State<BottomNavigator> {
-  List<Map<String, dynamic>> cartItems = []; 
+   
   int _selectedIndex = 0;
+  @override
+void initState() {
+  super.initState();
+
+  Provider.of<CartProvider>(context, listen: false).loadCart();
+}
 
   
 @override
   Widget build(BuildContext context) {
     final Size size=MediaQuery.of(context).size;
     final List<Widget> pages = [
-      Home(cartItems:cartItems),
+      Home(),
     Account(),
     Favourites(),
   ];
@@ -88,17 +96,53 @@ class _BottomNavigatorState extends State<BottomNavigator> {
         gradient: LinearGradient(
           colors: [ const Color.fromARGB(255, 175, 245, 95),Colors.green]
           )),
-      child:  Center(
-        child:GestureDetector(onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>ShoppingCart(cartItems:cartItems,)));
-        },
-          child: Icon(
-            Icons.shopping_bag_outlined,
-            color: Colors.white,
-            size: 28,
+      child: Center(
+  child: Consumer<CartProvider>(
+    builder: (context, provider, child) {
+      return Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ShoppingCart(),
+                ),
+              );
+            },
+            child: Icon(
+              Icons.shopping_bag_outlined,
+              color: Colors.white,
+              size: 28,
+            ),
           ),
-        ),
-      ),
+
+          // 🔥 CART BADGE
+          if (provider.totalItems > 0)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  provider.totalItems.toString(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      );
+    },
+  ),
+),
     ),
   ),
 

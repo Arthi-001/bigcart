@@ -1,3 +1,4 @@
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -34,11 +35,7 @@ bool generalNotifications = false;
     centerTitle: true,
     title:  Text(
       "Notifications",
-      style: GoogleFonts.poppins(
-        color: Colors.black,
-        fontSize: 18,
-        fontWeight: FontWeight.w600,
-      ),
+      style: AppTextStyles.title
     ),
 
     
@@ -74,17 +71,17 @@ bool generalNotifications = false;
                                       children: [
                                         Text(
                       "Allow notifications",
-                      style:GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),
+                      style:AppTextStyles.title,
                                         ),
                                          SizedBox(height: size.height*0.02,),
                                         Text(
                       "Turn on notifications to receive  ",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       
                                         ),
                                         Text(
                       "updates,alerts, and special offers.",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       overflow: TextOverflow.ellipsis,
                                         ),
                                         
@@ -135,17 +132,17 @@ bool generalNotifications = false;
                                       children: [
                                         Text(
                       "Email notifications",
-                      style:GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),
+                      style:AppTextStyles.title,
                                         ),
                                          SizedBox(height: size.height*0.02,),
                                         Text(
                       "Get updates, offers, and   ",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       
                                         ),
                                         Text(
                       "important alerts in your inbox.",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       overflow: TextOverflow.ellipsis,
                                         ),
                                         
@@ -195,17 +192,17 @@ bool generalNotifications = false;
                                       children: [
                                         Text(
                       "Order notifications",
-                      style:GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),
+                      style:AppTextStyles.title,
                                         ),
                                          SizedBox(height: size.height*0.02,),
                                         Text(
                       "Stay updated about your   ",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       
                                         ),
                                         Text(
                       "order status.",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       overflow: TextOverflow.ellipsis,
                                         ),
                                         
@@ -255,17 +252,17 @@ bool generalNotifications = false;
                                       children: [
                                         Text(
                       "General notifications",
-                      style:GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.bold),
+                      style:AppTextStyles.title,
                                         ),
                                          SizedBox(height: size.height*0.02,),
                                         Text(
                       "Get notified about important   ",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       
                                         ),
                                         Text(
                       "updates and activity.",
-                      style:GoogleFonts.poppins(fontWeight: FontWeight.w400),
+                      style:AppTextStyles.body,
                       overflow: TextOverflow.ellipsis,
                                         ),
                                         
@@ -323,11 +320,7 @@ bool generalNotifications = false;
                                child:
                                   Text(
                                      "Save settings",
-                                     style: GoogleFonts.poppins(
-                                       fontSize: 15,
-                                       color: Colors.white,
-                                       fontWeight: FontWeight.bold,
-                                     ),
+                                     style: AppTextStyles.whiteText
                                    ),
                                  
                                

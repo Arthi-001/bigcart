@@ -1,5 +1,5 @@
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AccountRow extends StatelessWidget {
   final IconData icon;
@@ -30,10 +30,7 @@ class AccountRow extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTextStyles.title
               ),
             ),
 

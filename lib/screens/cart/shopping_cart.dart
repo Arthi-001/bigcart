@@ -1,119 +1,33 @@
-import 'package:bigcart/screens/orderscreen.dart';
+
+import 'package:bigcart/providers/cart_provider.dart';
+import 'package:bigcart/providers/orderprovider.dart';
+import 'package:bigcart/screens/cart/orderscreen.dart';
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ShoppingCart extends StatefulWidget {
-  final List<Map<String, dynamic>> cartItems;
-  const ShoppingCart({super.key, required this.cartItems});
+  
+  const ShoppingCart({super.key, });
 
   @override
   State<ShoppingCart> createState() => _ShoppingCartState();
 }
 
 class _ShoppingCartState extends State<ShoppingCart> {
-  late List<Map<String, dynamic>> cartItems=[];
 
   @override
   void initState() {
     super.initState();
-    loadCartFromDB(); 
-  }
-
-  // ---------------- INCREASE QUANTITY ----------------
-  void increaseQty(int index) async {
-    setState(() {
-      cartItems[index]['qty'] = (cartItems[index]['qty'] ?? 1) + 1;
-    });
-
-    final supabase = Supabase.instance.client;
-    final user = supabase.auth.currentUser;
-    if (user == null) return;
-
-    await supabase
-        .from('cart')
-        .update({'unit': cartItems[index]['qty']})
-        .eq('user_id', user.id)
-        .eq('product_id', cartItems[index]['id']);
-  }
-
-  // ---------------- DECREASE QUANTITY ----------------
-  void decreaseQty(int index) async {
-    if (cartItems[index]['qty'] <= 1) return;
-
-    setState(() {
-      cartItems[index]['qty']--;
-    });
-
-    final supabase = Supabase.instance.client;
-    final user = supabase.auth.currentUser;
-    if (user == null) return;
-
-    await supabase
-        .from('cart')
-        .update({'unit': cartItems[index]['qty'].toString()})
-        .eq('user_id', user.id)
-        .eq('product_id', cartItems[index]['id']);
-  }
-
-  // ---------------- REMOVE ITEM ----------------
-  void removeItem(int index) async {
-    final supabase = Supabase.instance.client;
-    final user = supabase.auth.currentUser;
-    if (user == null) return;
-
-    await supabase
-        .from('cart')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('product_id', cartItems[index]['id']);
-
-    setState(() {
-      cartItems.removeAt(index);
-    });
-    loadCartFromDB();
-  }
-  Future<void> loadCartFromDB() async {
-  final supabase = Supabase.instance.client;
-  final user = supabase.auth.currentUser;
-  if (user == null) return;
-
-  final data = await supabase.from('cart').select().eq('user_id', user.id);
-
-  setState(() {
-    cartItems = data.map<Map<String, dynamic>>((item) {
-      return {
-        'id': item['product_id'],
-        'name': item['name'],
-        'price': (item['price'] as num?)?.toDouble() ?? 0.0,
-        'image_url': item['image_url'],
-        'unit':item['unit'],
-        'qty': int.tryParse(item['quantity'] ?? '1') ?? 1,
-      };
-    }).toList();
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+    Provider.of<CartProvider>(context, listen: false).loadCart();
   });
-}
-
-  // ---------------- TOTALS ----------------
-  double _calculateSubtotal() {
-    double total = 0;
-    for (var item in cartItems) {
-      double price = (item['price'] as num?)?.toDouble() ?? 0.0;
-total += price * (item['qty'] ?? 1);
-    }
-    return total;
   }
 
-  double _shippingCharge() {
-    double subtotal = _calculateSubtotal();
-    return subtotal > 500 ? 0 : 50;
-  }
-
-  double _calculateTotal() {
-    return _calculateSubtotal() + _shippingCharge();
-  }
-
-  @override
+  
+@override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
@@ -129,11 +43,18 @@ total += price * (item['qty'] ?? 1);
         centerTitle: true,
         title: Text(
           "Shopping Cart",
-          style: GoogleFonts.poppins(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.w600),
+          style: AppTextStyles.title
         ),
       ),
-      body: cartItems.isEmpty ? _emptyCart() : _cartList(),
+      body:  Consumer<CartProvider>(
+  builder: (context, provider, child) {
+    if (provider.cartItems.isEmpty) {
+      return _emptyCart();
+    }
+
+    return _cartList(provider);
+  },
+),
     );
   }
 
@@ -148,12 +69,12 @@ total += price * (item['qty'] ?? 1);
           SizedBox(height: size.height * 0.02),
           Text(
             "Your cart is empty!",
-            style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+            style:AppTextStyles.body,
           ),
           const SizedBox(height: 10),
           Text(
             "You will get a response within a few minutes",
-            style: GoogleFonts.poppins(color: Colors.grey.shade600),
+            style: AppTextStyles.body,
           ),
           const SizedBox(height: 30),
         ],
@@ -161,15 +82,15 @@ total += price * (item['qty'] ?? 1);
     );
   }
 
-  Widget _cartList() {
+  Widget _cartList(CartProvider provider) {
     final size = MediaQuery.of(context).size;
     return Column(
       children: [
         Expanded(
           child: ListView.builder(
-            itemCount: cartItems.length,
+            itemCount: provider.cartItems.length,
             itemBuilder: (context, index) {
-              final item = cartItems[index];
+              final item = provider.cartItems[index];
               int qty = item['qty'] ?? 1;
 
               return Dismissible(
@@ -184,7 +105,7 @@ total += price * (item['qty'] ?? 1);
                   ),
                   child: const Icon(Icons.delete, color: Colors.white, size: 30),
                 ),
-                onDismissed: (direction) => removeItem(index),
+                onDismissed: (direction) => provider.removeItem(index),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Container(
@@ -212,43 +133,34 @@ total += price * (item['qty'] ?? 1);
                             children: [
                               Text(
                                 "\$${item['price']} x $qty",
-                                style: GoogleFonts.poppins(color: Colors.green),
+                                style: AppTextStyles.green,
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 item['name'] ?? '',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
+                                style: AppTextStyles.bold
                               ),
                               const SizedBox(height: 4),
                               Text(item['unit'] ?? '',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.grey.shade700,
-                                    fontWeight: FontWeight.w400,
-                                  )),
+                                  style: AppTextStyles.body),
                             ],
                           ),
                         ),
                         Column(
                           children: [
                             GestureDetector(
-                              onTap: () => increaseQty(index),
+                              onTap: () => provider.increaseQty(index),
                               child: const Icon(Icons.add, color: Colors.green),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 6),
                               child: Text(
                                 "$qty",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.grey.shade700,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                                style: AppTextStyles.body 
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => decreaseQty(index),
+                              onTap: () => provider.decreaseQty(index),
                               child: const Icon(Icons.remove, color: Colors.green),
                             ),
                           ],
@@ -273,8 +185,8 @@ total += price * (item['qty'] ?? 1);
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Subtotal", style: GoogleFonts.poppins(color: Colors.grey.shade700)),
-                  Text("\$${_calculateSubtotal().toStringAsFixed(2)}",
-                      style: GoogleFonts.poppins(color: Colors.grey.shade700)),
+                  Text("\$${provider.subtotal}",
+                      style:  AppTextStyles.body),
                 ],
               ),
               const SizedBox(height: 8),
@@ -282,8 +194,8 @@ total += price * (item['qty'] ?? 1);
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Shipping", style: GoogleFonts.poppins(color: Colors.grey.shade700)),
-                  Text("\$${_shippingCharge().toStringAsFixed(2)}",
-                      style: GoogleFonts.poppins(color: Colors.grey.shade700)),
+                  Text("\$${provider.shipping}",
+                      style:  AppTextStyles.body),
                 ],
               ),
               Divider(height: 20),
@@ -291,9 +203,9 @@ total += price * (item['qty'] ?? 1);
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Total",
-                      style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Text("\$${_calculateTotal()}",
-                      style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
+                      style:  AppTextStyles.bold),
+                  Text("\$${provider.total}",
+                      style:  AppTextStyles.bold),
                 ],
               ),
               const SizedBox(height: 15),
@@ -309,14 +221,26 @@ total += price * (item['qty'] ?? 1);
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
+                   onPressed: () async {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+    // Place order and clear cart
+    await cartProvider.placeOrder();
+     await cartProvider.loadCart();
+
+    // Fetch updated orders for OrdersScreen
+    await Provider.of<OrdersProvider>(context, listen: false).fetchOrders();
+
+    if (!mounted) return;
+
+    // Navigate to OrdersScreen
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => const OrderScreen(),
       ),
     );
-                  },
+  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
@@ -327,11 +251,7 @@ total += price * (item['qty'] ?? 1);
                   ),
                   child: Text(
                     "Checkout",
-                    style: GoogleFonts.poppins(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style:  AppTextStyles.whiteText
                   ),
                 ),
               ),

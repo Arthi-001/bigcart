@@ -2,7 +2,8 @@ import 'package:bigcart/widgets/categoryitem.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesWidget extends StatelessWidget {
-  CategoriesWidget({super.key});
+  final Function(String category) onCategoryTap;
+  CategoriesWidget({super.key,required this.onCategoryTap});
 
   final List<Map<String, dynamic>> categories = [
     {"image": "assets/cabbage-removebg-preview.png", "title": "Vegetables" ,"color": Colors.green.shade100},
@@ -23,10 +24,16 @@ class CategoriesWidget extends StatelessWidget {
         itemCount: categories.length,
         separatorBuilder: (context, index) => const SizedBox(width: 20),
         itemBuilder: (context, index) {
-          return CategoryItem(
-            image: categories[index]["image"]!,
-            title: categories[index]["title"]!,
-            bgColor:categories[index]["color"]!,
+           final category = categories[index];
+          return GestureDetector(
+            onTap: () {
+              onCategoryTap(category["title"]);
+            },
+            child: CategoryItem(
+              image: categories[index]["image"]!,
+              title: categories[index]["title"]!,
+              bgColor:categories[index]["color"]!,
+            ),
           );
         },
       ),

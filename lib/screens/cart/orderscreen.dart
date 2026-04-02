@@ -1,6 +1,9 @@
 import 'package:bigcart/model/transactionmodel.dart';
-import 'package:bigcart/screens/ordersuccessscreen.dart';
-import 'package:bigcart/screens/transaction_provider.dart';
+import 'package:bigcart/providers/cart_provider.dart';
+import 'package:bigcart/providers/orderprovider.dart';
+import 'package:bigcart/providers/transaction_provider.dart';
+import 'package:bigcart/screens/cart/ordersuccessscreen.dart';
+
 import 'package:bigcart/widgets/ordersteps.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -52,6 +55,38 @@ void initState() {
   cardController.addListener(() => setState(() {}));
   nameController.addListener(() => setState(() {}));
   expiryController.addListener(() => setState(() {}));
+}
+Future<void> placeOrder() async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+
+  if (user == null) return;
+
+  // ✅ 1. Get cart items
+  final cartItems = await supabase
+      .from('cart')
+      .select()
+      .eq('user_id', user.id);
+
+  // ✅ 2. Calculate values
+  int itemCount = cartItems.length;
+
+  double totalAmount = 0;
+  for (var item in cartItems) {
+    totalAmount += (item['price'] as num).toDouble();
+  }
+final formattedDate = DateFormat('MMMM d yyyy').format(DateTime.now());
+  // ✅ 3. Insert correct data
+  await supabase.from('orders').insert({
+    'user_id': user.id,
+    'item_count': itemCount,
+    'total': totalAmount,
+    'placed':formattedDate ,
+    'confirmed': formattedDate,
+    'shipped': null,
+    'out_for_delivery': null,
+    'delivered': null,
+  });
 }
 
   @override
@@ -141,51 +176,43 @@ void initState() {
                       ),
                       child: ElevatedButton(
                         onPressed: () async {
-                          if (currentStep < 3) {
-                            // 👉 Step 1 & 2 → Next
-                            setState(() {
-                              currentStep++;
-                            });
-                          } else {
-                            final provider =
-    Provider.of<TransactionProvider>(context, listen: false);
+  if (currentStep < 3) {
+    setState(() => currentStep++);
+    return;
+  }
 
-provider.addTransaction(
-  TransactionModel(
-    name: nameController.text.isEmpty
-        ? "Customer"
-        : nameController.text,
+  // 1️⃣ Process payment (simulate or call actual payment)
+  bool paymentSuccess = true; // replace with real payment
+  if (!paymentSuccess) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Payment failed!")),
+    );
+    return;
+  }
 
-    amount: "\$20", // 👉 later connect with cart total
+  // 2️⃣ Place order via CartProvider
+  final cartProvider = Provider.of<CartProvider>(context, listen: false);
+  await cartProvider.placeOrder(); // this inserts the order & clears cart
 
-    method: getPaymentMethod(), // ✅ FIXED
+  // 3️⃣ Fetch orders to update OrdersProvider
+  final ordersProvider = Provider.of<OrdersProvider>(context, listen: false);
+  await ordersProvider.fetchOrders();
 
-   date: DateFormat('MMMM d yyyy ' 'at' ' h:mm a').format(DateTime.now()),
-  ),
-);
-final supabase = Supabase.instance.client;
-    final user = supabase.auth.currentUser;
-    if (user != null) {
-      await supabase.from('cart').delete().eq('user_id', user.id);
-    }
-                            ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text("Payment Successful"),
-      duration: Duration(seconds: 1),
-    ),
+  // 4️⃣ Show payment success SnackBar
+  if (!mounted) return;
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Payment Successful!"), duration: Duration(seconds: 1)),
   );
 
-  // ✅ Navigate after delay
+  // 5️⃣ Navigate to OrderSuccessScreen after delay
   Future.delayed(const Duration(seconds: 1), () {
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (context) => const OrderSuccessScreen(),
-      ),
+      MaterialPageRoute(builder: (_) => const OrderSuccessScreen()),
     );
   });
-                          }
-                        },
+},
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           shadowColor: Colors.transparent,

@@ -1,5 +1,5 @@
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CategoryItem extends StatelessWidget {
   final String image;
@@ -41,7 +41,7 @@ class CategoryItem extends StatelessWidget {
         Flexible(
           child: Text(
             title,
-            style: GoogleFonts.poppins(fontSize: textSize),
+            style: AppTextStyles.body,
              maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,

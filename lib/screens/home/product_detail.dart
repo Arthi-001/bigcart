@@ -1,7 +1,9 @@
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:bigcart/widgets/curvedcontainerclipper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:math';
 
 class ProductDetail extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -21,6 +23,20 @@ class ProductDetail extends StatefulWidget {
 class _ProductDetailState extends State<ProductDetail> {
   int itemCount = 1;
  late bool isFavourite;
+ late Color bgColor;
+
+ 
+
+Color getRandomPastelColor() {
+  final Random random = Random();
+
+  return Color.fromARGB(
+    255,
+    200 + random.nextInt(55), // light red
+    200 + random.nextInt(55), // light green
+    200 + random.nextInt(55), // light blue
+  );
+}
 
  Future<void> addToCart() async {
   try {
@@ -65,7 +81,8 @@ class _ProductDetailState extends State<ProductDetail> {
 @override
 void initState() {
   super.initState();
-  isFavourite = widget.isFavourite; // ✅ sync from ProductCard
+  isFavourite = widget.isFavourite; 
+   bgColor = getRandomPastelColor();// ✅ sync from ProductCard
 }
 
 void toggleFavourite() {
@@ -76,6 +93,9 @@ void toggleFavourite() {
     widget.onFavouriteToggle!();
   }
 }
+
+
+
 
 
   @override
@@ -99,7 +119,7 @@ void toggleFavourite() {
                     child: Container(
                       height: size.height * 0.4,
                       width: double.infinity,
-                      color: Colors.green.shade100,
+                      color:bgColor,
                     ),
                   ),
               
@@ -218,11 +238,8 @@ Text("(89 reviews)", style: GoogleFonts.poppins(
               
                     /// DESCRIPTION
                     Text(
-                    "Enjoy fresh, high-quality products sourced directly from trusted farms. Every item is carefully selected to ensure the best taste and nutrition, making it perfect for your daily meals and healthy lifestyle.",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.grey.shade700,
-                      ),
+                   "Discover a wide range of high-quality products for your everyday needs. From fresh fruits and vegetables sourced directly from trusted farms to pantry essentials like groceries, beverages, and edible oils, every item is carefully selected for quality and value. Keep your home running smoothly with reliable household products and take care of your little ones with safe and gentle baby care essentials. Everything you need, all in one place—fresh, convenient, and made for a better lifestyle.",
+                      style: AppTextStyles.body
                     ),
               
                     const SizedBox(height: 30),
@@ -240,7 +257,7 @@ Text("(89 reviews)", style: GoogleFonts.poppins(
         children: [
            Text(
             "Quantity",
-            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
+            style: AppTextStyles.body,
           ),
            SizedBox(width: size.width*0.4),
           // Remove icon
@@ -263,7 +280,7 @@ Text("(89 reviews)", style: GoogleFonts.poppins(
           // Item count
           Text(
             itemCount.toString(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: AppTextStyles.body,
           ),
            SizedBox(width: size.width*0.03),
           // Divider
@@ -319,11 +336,7 @@ Text("(89 reviews)", style: GoogleFonts.poppins(
                                       SizedBox(width: size.width*0.33,),
                                       Text(
                                          "Add to cart",
-                                         style: GoogleFonts.poppins(
-                                           fontSize: 17,
-                                           color: Colors.white,
-                                           fontWeight: FontWeight.bold,
-                                         ),
+                                         style: AppTextStyles.whiteText
                                        ),
                                         SizedBox(width: size.width*0.17,),
                                         Icon(Icons.shopping_bag_outlined,color:Colors.white,size: 30,)

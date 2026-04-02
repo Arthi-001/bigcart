@@ -1,6 +1,8 @@
 import 'package:bigcart/model/addressmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class AddAddress extends StatefulWidget {
   final AddressModel? existingData;
@@ -11,19 +13,21 @@ class AddAddress extends StatefulWidget {
 }
 
 class _AddAddressState extends State<AddAddress> {
+  final supabase = Supabase.instance.client;
   @override
-void initState() {
+void initState()  {
   super.initState();
-  if (widget.existingData != null) {
+ if (widget.existingData != null) {
     nameController.text = widget.existingData!.name;
     emailController.text = widget.existingData!.email;
     phoneController.text = widget.existingData!.phone;
     addressController.text = widget.existingData!.address;
     cityController.text = widget.existingData!.city;
     zipController.text = widget.existingData!.zip;
-    selectedCountry = widget.existingData?.country;
+    selectedCountry = widget.existingData!.country;
   }
 }
+
   bool isOn=false;
   TextEditingController nameController = TextEditingController();
 TextEditingController emailController = TextEditingController();
@@ -151,19 +155,50 @@ String? selectedCountry;
                                borderRadius: BorderRadius.circular(10),
                              ),
                              child: ElevatedButton(
-                               onPressed: () {
-                                Navigator.pop(
-    context,
-    AddressModel(
-      name: nameController.text,
-      email: emailController.text,
-      phone: phoneController.text,
-      address: addressController.text,
-      city: cityController.text,
-      zip: zipController.text,
-      country: selectedCountry ?? "",
-    ),
-  );},
+                               onPressed: () async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+
+  if (user == null) return;
+
+  try {
+    if (widget.existingData != null) {
+      // ✅ UPDATE
+      await supabase
+          .from('addresses')
+          .update({
+            'name': nameController.text,
+            'email': emailController.text,
+            'phone': phoneController.text,
+            'address': addressController.text,
+            'city': cityController.text,
+            'zip': zipController.text,
+            'country': selectedCountry ?? "",
+          })
+          .eq('phone', widget.existingData!.phone); // better use ID later
+    } else {
+      // ✅ INSERT
+      await supabase.from('addresses').insert({
+        'user_id': user.id,
+        'name': nameController.text,
+        'email': emailController.text,
+        'phone': phoneController.text,
+        'address': addressController.text,
+        'city': cityController.text,
+        'zip': zipController.text,
+        'country': selectedCountry ?? "",
+      });
+    }
+
+    Navigator.pop(context, true);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Address saved")),
+    );
+  } catch (e) {
+    print("Error: $e");
+  }
+},
                                style: ElevatedButton.styleFrom(
                                  backgroundColor: Colors.transparent,
                                  shadowColor: Colors.transparent,

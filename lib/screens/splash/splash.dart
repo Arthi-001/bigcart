@@ -1,7 +1,8 @@
 import 'package:bigcart/authentication/login.dart';
 import 'package:bigcart/authentication/welcome.dart';
 import 'package:bigcart/onboardscreens/onboarding.dart';
-import 'package:bigcart/screens/bottomnavigator.dart';
+import 'package:bigcart/screens/dashboard/bottomnavigator.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';

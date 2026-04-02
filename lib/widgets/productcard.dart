@@ -1,5 +1,5 @@
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProductCard extends StatefulWidget {
@@ -135,22 +135,17 @@ void initState() {
             SizedBox(height: size.height * 0.01),
         
             Text( "\$${widget.price.toStringAsFixed(2)}",
-                style: GoogleFonts.poppins(
-                    fontSize: 12, color: Colors.lightGreen)),
+                style: AppTextStyles.greenText),
         
             SizedBox(height: size.height * 0.01),
         
             Text(widget.name,
-                style: GoogleFonts.poppins(
-                    fontSize: 15,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold)),
+                style: AppTextStyles.bold),
         
             SizedBox(height: size.height * 0.01),
         
             Text(widget.unit,
-                style: GoogleFonts.poppins(
-                    fontSize: 12, color: Colors.grey.shade700)),
+                style: AppTextStyles.body),
         
             SizedBox(height: size.height * 0.01),
             Divider(),

@@ -1,10 +1,13 @@
 import 'package:bigcart/authentication/signup.dart';
+
+import 'package:bigcart/screens/dashboard/bottomnavigator.dart';
+import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:bigcart/widgets/onboardingheader.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:bigcart/authentication/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -14,6 +17,22 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  @override
+void initState() {
+  super.initState();
+  checkUser();
+}
+
+void checkUser() async {
+  final user = Supabase.instance.client.auth.currentUser;
+
+  if (user != null) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const BottomNavigator()),
+    );
+  }
+}
   @override
   Widget build(BuildContext context) {
     final Size size=MediaQuery.of(context).size;
@@ -39,10 +58,7 @@ class _WelcomeState extends State<Welcome> {
               
                      Text(
                       "Welcome",
-                      style: GoogleFonts.poppins(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyles.title
                     ),
               
                     SizedBox(height:size.height*0.01),
@@ -50,26 +66,46 @@ class _WelcomeState extends State<Welcome> {
                     Text(
                       "Get fresh groceries and daily essentials delivered to your doorstep.",
                       
-                      style: GoogleFonts.poppins( color: Colors.grey[700],fontSize: 15),
+                      style: AppTextStyles.body
                     ),
                     SizedBox(height:size.height*0.03),
                     
-                    Container(
-                      height:size.height*0.07,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color:Colors.white ),
-                        borderRadius: BorderRadius.circular(10),),
-                        child: Row(children: [
-                          Padding(
-                            padding:  EdgeInsets.all( MediaQuery.of(context).size.width * 0.04,),
-                            child: Image.asset("assets/google.png"),
-                          ),
-                          SizedBox(width:size.width*0.15),
-                          Text("Continue with google",style: GoogleFonts.poppins(fontSize: 15,fontWeight: FontWeight.w500),)
-                    
-                          ],),
-                        ),
+                    GestureDetector(
+  onTap: () async {
+    final supabase = Supabase.instance.client;
+
+    try {
+      await supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: 'io.supabase.flutter://login-callback/',
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Google Sign-In failed")),
+      );
+    }
+  },
+  child: Container(
+    height: size.height * 0.07,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Row(
+      children: [
+        Padding(
+          padding: EdgeInsets.all(size.width * 0.04),
+          child: Image.asset("assets/google.png"),
+        ),
+        SizedBox(width: size.width * 0.15),
+        Text(
+          "Continue with Google",
+          style:AppTextStyles.bold
+        )
+      ],
+    ),
+  ),
+),
                         SizedBox(height:size.height*0.03),
                          
                          Container(
@@ -112,11 +148,7 @@ class _WelcomeState extends State<Welcome> {
         SizedBox(width:size.width*0.2),
         Text(
           "Create an account",
-          style: GoogleFonts.poppins(
-            fontSize: 15,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.whiteText
         ),
       ],
     ),
@@ -128,12 +160,11 @@ Center(
           RichText(
             text: TextSpan(
               text: "Already have an account? ",
-              style: GoogleFonts.poppins( color: Colors.grey[700],
-                fontSize: 15),
+              style: AppTextStyles.body,
                 
                 children: [
                   TextSpan(text: "Login",
-                  style: GoogleFonts.poppins(color: Colors.black,fontSize: 15,fontWeight: FontWeight.bold),
+                  style: AppTextStyles.bold,
                   recognizer: TapGestureRecognizer()
   ..onTap = () async {
     final prefs = await SharedPreferences.getInstance();
