@@ -19,14 +19,14 @@ class AccountProvider extends ChangeNotifier {
   notifyListeners();
 }
 
-  // 🔥 Load user data
+  
   Future<void> loadUserData() async {
   final supabase = Supabase.instance.client;
   final user = supabase.auth.currentUser;
 
   if (user == null) return;
 
-  // ✅ START LOADING
+  
   isLoading = true;
   notifyListeners();
 
@@ -57,11 +57,11 @@ class AccountProvider extends ChangeNotifier {
     print("Error: $e");
   }
 
-  // ✅ STOP LOADING
+  
   isLoading = false;
   notifyListeners();
 }
-  // 📷 Pick from gallery
+  
   Future<void> pickImage() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.gallery);
@@ -72,7 +72,7 @@ class AccountProvider extends ChangeNotifier {
     }
   }
 
-  // 📷 Pick from camera
+  
   Future<void> pickImageFromCamera() async {
     final XFile? pickedFile =
         await _picker.pickImage(source: ImageSource.camera);

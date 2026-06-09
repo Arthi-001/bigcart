@@ -37,7 +37,7 @@ class TransactionModel {
             .replaceAll('AM', 'am')
             .replaceAll('PM', 'pm');
   } catch (e) {
-    return "Date not available"; // prevents crash
+    return "Date not available"; 
   }
 }
   factory TransactionModel.fromMap(Map<String, dynamic> json) {
@@ -45,7 +45,7 @@ class TransactionModel {
       name: json['name'],
       amount: json['amount'],
       method: json['method'] ?? '',
-      date: json['date'] ?? '', // ✅ FIXED HERE
+      date: json['date'] ?? '', 
     );
   }
 

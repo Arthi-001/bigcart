@@ -11,7 +11,7 @@ class LoginProvider extends ChangeNotifier {
     String password,
     BuildContext context,
   ) async {
-    // ✅ Validation
+   
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Email & Password required")),

@@ -6,7 +6,7 @@ class CartProvider extends ChangeNotifier {
    bool _isPlacingOrder=false;
   final supabase = Supabase.instance.client;
 
-  // ✅ Load cart
+ 
   Future<void> loadCart() async {
     final user = supabase.auth.currentUser;
     if (user == null) return;
@@ -28,7 +28,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ Add to cart
+  
   Future<void> addToCart(Map item) async {
     final user = supabase.auth.currentUser;
     if (user == null) return;
@@ -60,7 +60,7 @@ class CartProvider extends ChangeNotifier {
       });
     }
 
-    await loadCart(); // 🔥 refresh
+    await loadCart(); 
   }
   void clearCart() {
     cartItems.clear();
@@ -91,7 +91,7 @@ class CartProvider extends ChangeNotifier {
       'p_items': itemsData,
     });
 
-    print("ORDER PLACED ✅ $response");
+    print("ORDER PLACED $response");
     await supabase.from('transactions').insert({
   'user_id': currentUser.id,
   'amount': totalAmount, // make sure you have this
@@ -99,14 +99,14 @@ class CartProvider extends ChangeNotifier {
  'date': DateTime.now().toIso8601String(),
 });
 
-print("TRANSACTION INSERTED ✅");
+print("TRANSACTION INSERTED ");
 
-    // 🔥 IMPORTANT: delete cart from DB
+    
     await supabase
         .from('cart')
         .delete()
         .eq('user_id', currentUser.id);
-    print("CART DELETED FROM DB ✅");
+    print("CART DELETED FROM DB");
     
     final check = await supabase
     .from('cart')
@@ -117,13 +117,13 @@ print("AFTER DELETE CART DATA: $check");
     clearCart();
 
   } catch (e) {
-    print("ERROR ❌ $e");
+    print("ERROR $e");
   } finally {
     _isPlacingOrder = false;
   }
 }
   
-  // ✅ Increase
+ 
   Future<void> increaseQty(int index) async {
     cartItems[index]['qty']++;
 
@@ -139,7 +139,7 @@ print("AFTER DELETE CART DATA: $check");
     notifyListeners();
   }
 
-  // ✅ Decrease
+  
   Future<void> decreaseQty(int index) async {
     if (cartItems[index]['qty'] <= 1) return;
 
@@ -157,7 +157,7 @@ print("AFTER DELETE CART DATA: $check");
     notifyListeners();
   }
 
-  // ✅ Remove
+  
   Future<void> removeItem(int index) async {
     final user = supabase.auth.currentUser;
     if (user == null) return;
@@ -172,7 +172,6 @@ print("AFTER DELETE CART DATA: $check");
     notifyListeners();
   }
 
-  // ✅ Total count (for badge)
   int get totalItems {
     int count = 0;
     for (var item in cartItems) {

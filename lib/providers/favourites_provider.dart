@@ -5,7 +5,6 @@ class FavouritesProvider extends ChangeNotifier {
   List<dynamic> items = [];
   bool isLoading = false;
 
-  // 🔥 LOAD FAVOURITES
   Future<void> loadFavourites() async {
     final supabase = Supabase.instance.client;
     final user = supabase.auth.currentUser;
@@ -26,7 +25,6 @@ class FavouritesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 🔥 REMOVE FAVOURITE
   Future<void> removeFavourite(String productId, int index) async {
     final supabase = Supabase.instance.client;
     final user = supabase.auth.currentUser;
@@ -47,7 +45,6 @@ class FavouritesProvider extends ChangeNotifier {
   notifyListeners();
 }
 
-  // 🔥 ADD TO CART
   Future<void> addToCart(Map item) async {
     final supabase = Supabase.instance.client;
     final user = supabase.auth.currentUser;

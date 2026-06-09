@@ -9,7 +9,7 @@ class HomeProvider extends ChangeNotifier {
 
   final supabase = Supabase.instance.client;
 
-  // ✅ Load products
+  
   Future<void> fetchProducts() async {
     isLoading = true;
     notifyListeners();
@@ -29,7 +29,7 @@ void clearHomeProducts() {
   notifyListeners();
 }
 
-  // ✅ Load favourites
+  
   Future<void> loadFavourites() async {
     final user = supabase.auth.currentUser;
     if (user == null) return;
@@ -45,7 +45,7 @@ void clearHomeProducts() {
     notifyListeners();
   }
 
-  // ✅ Add to cart
+  
   Future<void> addToCart(Map item) async {
     final user = supabase.auth.currentUser;
     if (user == null) return;
@@ -80,7 +80,7 @@ void clearHomeProducts() {
     notifyListeners();
   }
 
-  // ✅ Toggle favourite
+  
   void toggleFavourite(String productId) {
     if (favouriteIds.contains(productId)) {
       favouriteIds.remove(productId);

@@ -53,7 +53,9 @@ bool isObscure=true;
                     
                     style: AppTextStyles.body,
                   ),
+
                   SizedBox(height:size.height*0.03),
+
                    Container(
                     height:size.height*0.07,
                     decoration: BoxDecoration(
@@ -74,7 +76,9 @@ bool isObscure=true;
                   
                         
                       ),
+
                       SizedBox(height:size.height*0.01),
+
                       Container(
                     height:size.height*0.07,
                     decoration: BoxDecoration(
@@ -96,7 +100,9 @@ bool isObscure=true;
                   
                         
                       ),
+
                       SizedBox(height:size.height*0.01),
+
                        Container(
                 height:size.height*0.08,
                       decoration: BoxDecoration(
@@ -111,7 +117,7 @@ bool isObscure=true;
     return TextField( controller: passwordController,
       obscureText: true,
       onChanged: (value) {
-        provider.validatePassword(value); // 🔥 live validation
+        provider.validatePassword(value); 
       },
       decoration: InputDecoration(
         hintText: "Password",hintStyle: AppTextStyles.subtitle,
@@ -121,7 +127,6 @@ bool isObscure=true;
   errorBorder: InputBorder.none,
   focusedErrorBorder: InputBorder.none,
 
-  // ❌ REMOVE default error style (optional cleaner UI)
 
         errorText:
             provider.passwordError.isEmpty ? null : provider.passwordError,

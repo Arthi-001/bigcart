@@ -18,8 +18,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-   bool isOn = false;
-   bool isObscure=true;
+  bool isOn = false;
+  bool isObscure=true;
   @override
   Widget build(BuildContext context) {
     final Size size=MediaQuery.of(context).size;
@@ -32,6 +32,7 @@ class _LoginState extends State<Login> {
               imagePath: "assets/tara-clark-a4Vow2p6AXE-unsplash.jpg",
               title: "Welcome",
             ),
+
             Container( 
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -53,7 +54,9 @@ class _LoginState extends State<Login> {
                     
                     style: AppTextStyles.body
                   ),
+
                   SizedBox(height:size.height*0.03),
+
                    Container(
                     height:size.height*0.07,
                     decoration: BoxDecoration(
@@ -71,7 +74,9 @@ class _LoginState extends State<Login> {
                 ),
               ),
                       ),
+
                       SizedBox(height:size.height*0.01),
+
                        Container(
                     height:size.height*0.07,
                     decoration: BoxDecoration(
@@ -106,7 +111,9 @@ class _LoginState extends State<Login> {
                     ),
               ),
                       ),
+
                        SizedBox(height:size.height*0.01),
+
                       Row(
               children: [
                 Transform.scale(scale: 0.8,
@@ -134,6 +141,7 @@ class _LoginState extends State<Login> {
                 
               ],
             ),
+
              SizedBox(height:size.height*0.02),
                        
                        Container(
@@ -181,7 +189,9 @@ class _LoginState extends State<Login> {
                 
               ),
             ),
+
             SizedBox(height: size.height*0.01,),
+            
             Center(
                       child:
                       RichText(

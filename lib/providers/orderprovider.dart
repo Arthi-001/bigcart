@@ -8,7 +8,6 @@ class OrdersProvider with ChangeNotifier {
 
   bool _isFetching = false; // Prevent multiple simultaneous fetches
 
-  /// Fetch orders safely
   Future<void> fetchOrders() async {
   if (_isFetching) return;
   _isFetching = true;
@@ -22,7 +21,7 @@ class OrdersProvider with ChangeNotifier {
   }
 
   try {
-    // Fetch orders for this user
+  
     final response = await supabase
         .from('orders')
         .select('id, user_id, total, item_count, placed, confirmed, shipped, out_for_delivery, delivered, items')
@@ -37,7 +36,7 @@ class OrdersProvider with ChangeNotifier {
     }
 
     final fetchedOrders = response.map<Order>((data) {
-      // Parse items JSON
+     
       List<Map<String, dynamic>> itemsList = [];
       if (data['items'] != null) {
         try {
