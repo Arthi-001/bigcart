@@ -6,7 +6,6 @@ import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ShoppingCart extends StatefulWidget {
   
@@ -29,7 +28,6 @@ class _ShoppingCartState extends State<ShoppingCart> {
   
 @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F9),

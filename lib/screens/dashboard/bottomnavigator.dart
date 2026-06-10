@@ -117,7 +117,6 @@ void initState() {
             ),
           ),
 
-          // 🔥 CART BADGE
           if (provider.totalItems > 0)
             Positioned(
               right: 0,

@@ -28,7 +28,7 @@ class OrdersProvider with ChangeNotifier {
         .eq('user_id', currentUser.id)
         .order('placed', ascending: false);
 
-    if (response == null || response.isEmpty) {
+    if (response.isEmpty) {
       _orders = [];
       notifyListeners();
       _isFetching = false;
@@ -67,8 +67,6 @@ class OrdersProvider with ChangeNotifier {
     _orders = map.values.toList();
 
     notifyListeners();
-  } catch (e) {
-    print("ERROR FETCHING ORDERS ❌: $e");
   } finally {
     _isFetching = false;
   }

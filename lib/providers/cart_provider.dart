@@ -86,12 +86,11 @@ class CartProvider extends ChangeNotifier {
       };
     }).toList();
 
-    final response = await supabase.rpc('create_order_with_items', params: {
+    await supabase.rpc('create_order_with_items', params: {
       'p_user_id': currentUser!.id,
       'p_items': itemsData,
     });
 
-    print("ORDER PLACED $response");
     await supabase.from('transactions').insert({
   'user_id': currentUser.id,
   'amount': totalAmount, // make sure you have this
@@ -99,25 +98,21 @@ class CartProvider extends ChangeNotifier {
  'date': DateTime.now().toIso8601String(),
 });
 
-print("TRANSACTION INSERTED ");
 
     
     await supabase
         .from('cart')
         .delete()
         .eq('user_id', currentUser.id);
-    print("CART DELETED FROM DB");
     
-    final check = await supabase
+    await supabase
     .from('cart')
     .select()
     .eq('user_id', currentUser.id);
 
-print("AFTER DELETE CART DATA: $check");
     clearCart();
 
   } catch (e) {
-    print("ERROR $e");
   } finally {
     _isPlacingOrder = false;
   }

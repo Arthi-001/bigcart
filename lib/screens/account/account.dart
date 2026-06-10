@@ -15,7 +15,6 @@ import 'package:bigcart/widgets/account_skeleton.dart';
 
 import 'package:bigcart/widgets/accountrow.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -36,7 +35,6 @@ void initState() {
     final provider =
         Provider.of<AccountProvider>(context, listen: false);
 
-    // ✅ CLEAR → force skeleton every time
     provider.clearUserData();
 
     provider.loadUserData();
@@ -46,7 +44,6 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
-     final Size size=MediaQuery.of(context).size;
     return Scaffold(
        body: Consumer<AccountProvider>(
   builder: (context, provider, child) {
@@ -77,7 +74,6 @@ void initState() {
                 ],
               ),
 
-              // 👤 PROFILE IMAGE
               Positioned(
                 top: size.height * 0.1,
                 left: size.width / 2.3 - 30,
@@ -94,7 +90,6 @@ void initState() {
                 ),
               ),
 
-              // 📷 CAMERA BUTTON
               Positioned(
                 top: size.height * 0.19,
                 left: size.width / 1.5 - 30,
@@ -150,7 +145,6 @@ void initState() {
                 ),
               ),
 
-              // 👤 NAME + EMAIL
               Positioned(
                 top: size.height * 0.25,
                 left: size.width / 2.3 - 30,
@@ -162,7 +156,6 @@ void initState() {
                 ),
               ),
 
-              // 📋 MENU OPTIONS
               Positioned(
                 top: size.height * 0.32,
                 left: 0,
@@ -178,13 +171,13 @@ void initState() {
                           MaterialPageRoute(
                               builder: (context) => Aboutme()),
                         );
+                        // ignore: use_build_context_synchronously
                         Provider.of<AccountProvider>(context,
                                 listen: false)
                             .loadUserData();
                       },
                     ),
 
-                    // 🔽 ADD THIS AT END FOR EXTRA SPACE
                    
                     AccountRow(
                 icon: Icons.inventory_outlined,
@@ -285,6 +278,7 @@ void initState() {
                                 .signOut();
 
                             Navigator.pushAndRemoveUntil(
+                              // ignore: use_build_context_synchronously
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>

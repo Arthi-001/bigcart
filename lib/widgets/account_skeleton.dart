@@ -37,7 +37,6 @@ class AccountSkeleton extends StatelessWidget {
             ],
           ),
 
-          // 👤 Profile image
           Positioned(
             top: size.height * 0.1,
             left: size.width / 2.3 - 30,
@@ -47,7 +46,6 @@ class AccountSkeleton extends StatelessWidget {
             ),
           ),
 
-          // 👤 Name + Email
           Positioned(
             top: size.height * 0.25,
             left: 0,
@@ -61,7 +59,6 @@ class AccountSkeleton extends StatelessWidget {
             ),
           ),
 
-          // 📋 Menu list
           Positioned(
             top: size.height * 0.32,
             left: 0,

@@ -9,7 +9,6 @@ class TransactionProvider with ChangeNotifier {
 
   final supabase = Supabase.instance.client;
 
-  // ✅ LOAD from Supabase
   Future<void> loadTransactions() async {
     final user = supabase.auth.currentUser;
     if (user == null) return;
@@ -32,12 +31,10 @@ class TransactionProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ ADD + SAVE to Supabase
   Future<void> addTransaction(TransactionModel txn) async {
     final user = supabase.auth.currentUser;
     if (user == null) return;
 
-    // Save to DB
     await supabase.from('transactions').insert({
       'user_id': user.id,
       'method': txn.method,
@@ -45,7 +42,6 @@ class TransactionProvider with ChangeNotifier {
       'date': DateTime.now().toIso8601String(),
     });
 
-    // Update local list
     _transactions.insert(0, txn);
     notifyListeners();
   }

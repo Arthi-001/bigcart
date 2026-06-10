@@ -1,6 +1,4 @@
-import 'package:bigcart/authentication/login.dart';
 import 'package:bigcart/screens/dashboard/bottomnavigator.dart';
-import 'package:bigcart/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -26,7 +24,7 @@ void validatePassword(String password) {
     String password,
     BuildContext context,
   ) async {
-    // ✅ Validation
+    
     if (email.isEmpty || phone.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill all fields")),
@@ -47,29 +45,31 @@ void validatePassword(String password) {
 
       final supabase = Supabase.instance.client;
 
-      // 🔐 Signup
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
       );
 
       if (response.user != null) {
-        // ✅ Save extra data
+        
         await supabase.from('users_data').insert({
           'id': response.user!.id,
           'phone': phone,
         });
 
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Signup successful! ")),
         );
 
         Navigator.pushReplacement(
+  // ignore: use_build_context_synchronously
   context,
   MaterialPageRoute(builder: (_) =>BottomNavigator()),
 );
       }
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Signup failed")),
       );

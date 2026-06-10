@@ -26,7 +26,7 @@ class CategorySkeleton extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 🖼 Image skeleton
+               
                 Container(
                   height: 120,
                   decoration: BoxDecoration(
@@ -37,7 +37,6 @@ class CategorySkeleton extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
-                // 📦 Name
                 Container(
                   height: 10,
                   width: 100,
@@ -47,7 +46,6 @@ class CategorySkeleton extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                // 💰 Price
                 Container(
                   height: 10,
                   width: 60,
@@ -57,7 +55,6 @@ class CategorySkeleton extends StatelessWidget {
 
                 const Spacer(),
 
-                // ➕ Button placeholder
                 Container(
                   height: 30,
                   margin: const EdgeInsets.all(8),

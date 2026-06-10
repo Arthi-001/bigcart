@@ -1,6 +1,5 @@
 import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Aboutme extends StatefulWidget {
@@ -21,7 +20,7 @@ TextEditingController confirmController = TextEditingController();
    @override
   void initState() {
     super.initState();
-    _loadUserData(); // Load saved data when page opens
+    _loadUserData(); 
   }
 
  Future<void> _loadUserData() async {
@@ -51,8 +50,8 @@ TextEditingController confirmController = TextEditingController();
         phoneController.text = "";
       });
     }
+  // ignore: empty_catches
   } catch (e) {
-    print("Load error: $e");
   }
 }
   @override
@@ -133,6 +132,7 @@ TextEditingController confirmController = TextEditingController();
           'phone': phoneController.text,
         });
 
+        // ignore: use_build_context_synchronously
         Navigator.pop(context, {
           "name": nameController.text,
           "email": emailController.text,
@@ -162,6 +162,7 @@ TextEditingController confirmController = TextEditingController();
 )
   );
   }
+  // ignore: strict_top_level_inference
   Widget _buildInput(controller, hint, icon) {
   return Container(
     margin: const EdgeInsets.only(bottom: 15),
@@ -180,6 +181,7 @@ TextEditingController confirmController = TextEditingController();
     ),
   );
 }
+// ignore: strict_top_level_inference
 Widget _buildPassword(controller, hint) {
   return Container(
     margin: const EdgeInsets.only(bottom: 15),

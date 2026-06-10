@@ -36,7 +36,7 @@ class _ProductCardState extends State<ProductCard> {
   @override
 void initState() {
   super.initState();
-  isFavourite = widget.isFavourite; // ✅ here
+  isFavourite = widget.isFavourite; 
 }// track favourite state
 
   void toggleFavourite() async {
@@ -72,7 +72,7 @@ void initState() {
     final Size size=MediaQuery.of(context).size;
     return Stack(
   children: [
-    // ✅ Your main card
+    
     GestureDetector(onTap: widget.onTap,
       child: Container(
         width: size.width * 0.42,
@@ -92,8 +92,7 @@ void initState() {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-        
-            /// Image Container
+       
             SizedBox(
               height: size.width * 0.28,
               width: size.width * 0.28,
@@ -171,7 +170,6 @@ void initState() {
       ),
     ),
 
-    // ✅ Favourite icon (CORRECT PLACE)
     Positioned(
       top: 10,
       right: 15,
@@ -183,7 +181,7 @@ void initState() {
     color: isFavourite ? Colors.red : Colors.grey,
     size: 20,
   ),
-  onPressed: toggleFavourite, // ✅ call internal toggle
+  onPressed: toggleFavourite, 
 ),
       ),
     ),

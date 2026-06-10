@@ -33,7 +33,6 @@ void initState() {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
 
-      // 🔹 AppBar
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -51,7 +50,6 @@ void initState() {
         ),
       ),
 
-      // 🔹 Body
       body: Center(
         child: Column(
           
@@ -66,7 +64,6 @@ void initState() {
         
              SizedBox(height:size.height * 0.02, ),
         
-            // ✅ TITLE
             Text(
               "Your order was\nsuccessful !",
               textAlign: TextAlign.center,
@@ -77,8 +74,7 @@ void initState() {
             ),
         
             SizedBox(height:size.height * 0.01, ),
-        
-            // 📄 SUBTEXT
+    
             Text(
               "You will get a response within\na few minutes.",
               textAlign: TextAlign.center,

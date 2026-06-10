@@ -45,7 +45,7 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                       child:  TextField( controller: emailController,
                       decoration: InputDecoration(
                       hintText: "Email Address",
-                      border: InputBorder.none, // removes default underline
+                      border: InputBorder.none, 
                       prefixIcon: Icon(Icons.email_outlined),
                       contentPadding: EdgeInsets.symmetric(
                       vertical: size.height * 0.02,

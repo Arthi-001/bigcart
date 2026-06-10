@@ -3,7 +3,6 @@ import 'package:bigcart/providers/transaction_provider.dart';
 import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Transactions extends StatefulWidget {
   const Transactions({super.key});

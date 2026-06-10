@@ -39,7 +39,6 @@ void onFavouriteToggle(Map product) {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(backgroundColor: const Color(0xFFF4F5F9),
       appBar: AppBar(

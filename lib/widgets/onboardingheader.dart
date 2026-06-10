@@ -18,7 +18,6 @@ class OnboardingHeader extends StatelessWidget {
     return Stack(
       children: [
 
-        /// Background Image (Half Screen)
         SizedBox(
           height: size.height * 0.6,
           width: double.infinity,
@@ -30,7 +29,6 @@ class OnboardingHeader extends StatelessWidget {
           ),
         ),
 
-        /// Back Arrow + Title
         Positioned(
           top: size.height * 0.06,
           left: 10,
@@ -58,7 +56,7 @@ class OnboardingHeader extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(width:size.width*0.04) // keeps title centered
+              SizedBox(width:size.width*0.04)
             ],
           ),
         ),

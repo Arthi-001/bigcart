@@ -23,7 +23,7 @@ class TransactionModel {
 
    String get formattedDate {
   try {
-    if (date == null || date.toString().isEmpty) {
+    if (date.toString().isEmpty) {
       return "Date not available";
     }
 

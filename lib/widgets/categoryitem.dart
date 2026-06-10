@@ -19,7 +19,6 @@ class CategoryItem extends StatelessWidget {
     
     final double containerSize = size.width * 0.15; 
     final double imageSize = containerSize * 0.5;   
-    final double textSize = size.width * 0.035;
      final double spacing = size.height * 0.007;   
     return Column(
        mainAxisSize: MainAxisSize.min, 

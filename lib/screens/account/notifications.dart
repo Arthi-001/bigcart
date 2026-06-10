@@ -1,6 +1,5 @@
 import 'package:bigcart/utils/app_text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({super.key});

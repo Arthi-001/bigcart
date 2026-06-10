@@ -66,7 +66,7 @@ class _LoginState extends State<Login> {
                       child: TextField( controller: emailController,
                 decoration: InputDecoration(
                   hintText: "Email Address",hintStyle: AppTextStyles.subtitle,
-                  border: InputBorder.none, // removes default underline
+                  border: InputBorder.none, 
                   prefixIcon: Icon(Icons.email_outlined),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: size.height * 0.02,

@@ -307,12 +307,7 @@ class _FilterState extends State<Filter> {
                                borderRadius: BorderRadius.circular(10),
                              ),
                              child: ElevatedButton(
-                               onPressed: () { print("Min: ${minController.text}");
-                  print("Max: ${maxController.text}");
-                  print("Rating: $selectedRating");
-                  print("Discount: $discount");
-                  print("Free Shipping: $freeShipping");
-                  print("Same Day: $sameDay");
+                               onPressed: () {
 
                   Navigator.pop(context);},
                                style: ElevatedButton.styleFrom(

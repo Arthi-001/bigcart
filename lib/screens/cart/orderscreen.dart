@@ -1,7 +1,5 @@
-import 'package:bigcart/model/transactionmodel.dart';
 import 'package:bigcart/providers/cart_provider.dart';
 import 'package:bigcart/providers/orderprovider.dart';
-import 'package:bigcart/providers/transaction_provider.dart';
 import 'package:bigcart/screens/cart/ordersuccessscreen.dart';
 
 import 'package:bigcart/widgets/ordersteps.dart';

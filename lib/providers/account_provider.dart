@@ -54,7 +54,6 @@ class AccountProvider extends ChangeNotifier {
       phone = data['phone'] ?? "";
     }
   } catch (e) {
-    print("Error: $e");
   }
 
   

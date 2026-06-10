@@ -42,7 +42,6 @@ class _MyAddressState extends State<MyAddress> {
         isLoading = false;
       });
     } catch (e) {
-      print("Error loading addresses: $e");
       setState(() {
         isLoading = false;
       });
@@ -63,7 +62,6 @@ class _MyAddressState extends State<MyAddress> {
 
       loadAddresses();
     } catch (e) {
-      print("Error deleting address: $e");
     }
   }
 

@@ -175,7 +175,7 @@ class _OrderCardState extends State<OrderCard> {
 
       final formattedDate = isCompleted
           ? DateFormat('MMMM dd yyyy')
-              .format(DateTime.parse(rawDate!))
+              .format(DateTime.parse(rawDate))
           : "pending";
 
       return Padding(

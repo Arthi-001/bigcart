@@ -66,7 +66,7 @@ bool isObscure=true;
                         TextField( controller: emailController,
                       decoration: InputDecoration(
                   hintText: "Email Address",hintStyle: AppTextStyles.subtitle,
-                  border: InputBorder.none, // removes default underline
+                  border: InputBorder.none, 
                   prefixIcon: Icon(Icons.email_outlined),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: size.height * 0.02,
@@ -90,7 +90,7 @@ bool isObscure=true;
                         TextField( controller: phoneController,
                       decoration: InputDecoration(
                   hintText: "Phone Number",hintStyle: AppTextStyles.subtitle,
-                  border: InputBorder.none, // removes default underline
+                  border: InputBorder.none, 
                   prefixIcon: Icon(Icons.phone_outlined),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: size.height * 0.02,

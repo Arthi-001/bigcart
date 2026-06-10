@@ -10,7 +10,6 @@ import 'package:bigcart/widgets/home_skeleton.dart';
 import 'package:bigcart/widgets/productcard.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 
@@ -45,7 +44,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
 
     return Scaffold(backgroundColor: const Color(0xFFF4F5F9) ,
       body: Consumer<HomeProvider>(

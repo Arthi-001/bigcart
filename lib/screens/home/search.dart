@@ -172,7 +172,7 @@ class _SearchState extends State<Search> {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
 
-    // ✅ Add to history only here
+  
     Provider.of<SearchHistoryProvider>(context, listen: false)
         .addSearch(trimmed);
 
@@ -193,7 +193,6 @@ class _SearchState extends State<Search> {
                    final query = searchController.text.trim();
     if (query.isEmpty) return;
 
-    // ✅ Add to history here too
     Provider.of<SearchHistoryProvider>(context, listen: false)
         .addSearch(query);
                   Navigator.push(
@@ -209,7 +208,6 @@ class _SearchState extends State<Search> {
       body: Column(
   children: [
 
-    /// 🔥 SHOW HISTORY + DISCOVER ONLY WHEN EMPTY
     if (searchController.text.isEmpty) ...[
       // SEARCH HISTORY
       Padding(
@@ -270,7 +268,7 @@ class _SearchState extends State<Search> {
 
       const SizedBox(height: 10),
 
-      // DISCOVER MORE
+      
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
@@ -310,7 +308,7 @@ class _SearchState extends State<Search> {
       ),
     ],
 
-    /// 🔥 SEARCH RESULTS (ALWAYS OUTSIDE)
+    
     Expanded(
       child: searchController.text.isEmpty
           ? const SizedBox()
@@ -361,7 +359,6 @@ class _SearchState extends State<Search> {
                 ),
     ),
 
-    /// 🔥 BOTTOM OPTIONS
     SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
